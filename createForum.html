@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Forum</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Inter', sans-serif;
+            background-color: white;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-family: Roboto, sans-serif;
+            font-weight: 400;
+            color: black;
+            margin-bottom: 40px;
+            border-bottom: 1px solid black;
+            padding-bottom: 16px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+        }
+
+        .form-group label {
+            width: 120px;
+            font-size: 16px;
+            color: black;
+            padding-top: 10px;
+        }
+
+        input[type="text"],
+        textarea {
+            flex: 1;
+            padding: 16px;
+            font-size: 16px;
+            border: 1px solid black;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        textarea {
+            height: 240px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            align-self: flex-end;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-family: Roboto, sans-serif;
+            color: black;
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 0 1px black;
+        }
+
+        @media (max-width: 600px) {
+            .form-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-group label {
+                width: 100%;
+                padding-top: 0;
+            }
+
+            .submit-btn {
+                align-self: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="page-title">Create a New forum</div>
+<form onsubmit="createForum(event)">
+    <!-- Title Field -->
+    <div class="form-group">
+        <label for="forum-title">Title</label>
+        <input type="text" id="forum-title" placeholder="Enter title here..." />
+    </div>
+
+    <!-- Body Text Field -->
+    <div class="form-group">
+        <label for="forum-body">Content</label>
+        <textarea id="forum-body" placeholder="Enter body content here..."></textarea>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="submit-btn">Create Forum</button>
+</form>
+
+<script>
+    function createForum(event) {
+        event.preventDefault();
+
+        const titleInput = document.getElementById("forum-title");
+        const forumTitle = titleInput.value.trim();
+
+        if (!forumTitle) {
+            alert("Please enter a forum title.");
+            return;
+        }
+
+        // 从 localStorage 读取已有论坛列表
+        const forums = JSON.parse(localStorage.getItem("forums") || "[]");
+
+        // 添加新论坛
+        forums.push(forumTitle);
+
+        // 保存回 localStorage
+        localStorage.setItem("forums", JSON.stringify(forums));
+
+        // 跳转回主页
+        window.location.href = "main.html";
+    }
+</script>
+
+    </div>
+
+
+</body>
+
+</html>

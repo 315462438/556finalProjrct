@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fullscreen Map with Paths</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: white;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            border: 4px solid rebeccapurple;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 12px 2vw;
+            /* 更灵活的边距 */
+            background: white;
+            gap: 12px;
+        }
+
+        .location-icon {
+            font-size: 24px;
+            margin-right: 12px;
+        }
+
+        .search-box {
+            flex: 1;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .map-area {
+            flex: 2;
+            background: #e2e2e2;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* SVG for path lines */
+        .map-paths {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .map-icon,
+        .avatar,
+        .name {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .map-icon img,
+        .avatar img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .avatar-circle {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-circle img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .name {
+            font-size: 14px;
+            margin-top: 4px;
+            color: #000;
+        }
+
+        .friend-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .friend-list h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .friend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+        }
+
+        .friend-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .friend-left .avatar-circle {
+            background: white;
+            border: 1px solid rebeccapurple;
+        }
+
+        .friend-left .avatar-circle img {
+            filter: hue-rotate(220deg);
+        }
+
+        .friend-left span {
+            font-size: 16px;
+        }
+
+        .friend-item button {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Map positions */
+        .map .TD {
+            top: 25%;
+            left: 20%;
+        }
+
+        .map .Wang {
+            top: 60%;
+            left: 20%;
+        }
+
+        .map .Yolanda {
+            top: 50%;
+            left: 85%;
+        }
+
+        .map .Anqu {
+            top: 25%;
+            left: 65%;
+        }
+
+        .map .center-icon {
+            top: 50%;
+            left: 50%;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            margin-left: auto;
+            color: #333;
+            padding: 8px;
+            transition: transform 0.2s ease;
+            }
+
+            .close-btn:hover {
+            transform: scale(1.2);
+            }
+
+
+        @media (max-width: 768px) {
+            .friend-list h2 {
+                font-size: 20px;
+            }
+
+            .friend-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .friend-item button {
+                margin-top: 8px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top bar -->
+    <div class="header">
+        <div class="location-icon">📍</div>
+        <div class="search-box">
+            <input type="text" placeholder="Hinted search text" />
+        </div>
+        <button class="close-btn" onclick="window.location.href='main.html'">✖</button>
+    </div>
+
+
+    <!-- Main content -->
+    <div class="main">
+        <!-- Map area -->
+        <div class="map-area map">
+
+            <!-- 🟣 PATHS (SVG LINES) -->
+            <svg class="map-paths" xmlns="http://www.w3.org/2000/svg">
+                <!-- TD -> Anqu (虚线) -->
+                <line x1="20%" y1="25%" x2="65%" y2="25%" stroke="#6a0dad" stroke-width="2" stroke-dasharray="5" />
+
+                <!-- TD -> Wang Chu (实线) -->
+                <line x1="20%" y1="25%" x2="20%" y2="60%" stroke="#6a0dad" stroke-width="2" />
+
+                <!-- Wang Chu -> Yolanda (实线) -->
+                <line x1="20%" y1="60%" x2="85%" y2="50%" stroke="#6a0dad" stroke-width="2" />
+
+                <!-- Yolanda -> Anqu (虚线) -->
+                <line x1="85%" y1="50%" x2="65%" y2="25%" stroke="#6a0dad" stroke-width="2" stroke-dasharray="5" />
+            </svg>
+
+            <!-- Center map icon -->
+            <div class="map-icon center-icon">
+                <img src="https://img.icons8.com/ios-filled/50/000000/map.png" alt="Map">
+            </div>
+
+            <!-- TD -->
+            <div class="map-icon TD">
+                <img src="https://img.icons8.com/ios-filled/50/000000/marker.png" alt="Pin" />
+            </div>
+            <div class="avatar TD">
+                <div class="avatar-circle">
+                    <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
+                </div>
+                <div class="name">TD</div>
+            </div>
+
+            <!-- Wang Chu -->
+            <div class="map-icon Wang">
+                <img src="https://img.icons8.com/ios-filled/50/000000/marker.png" alt="Pin" />
+            </div>
+            <div class="avatar Wang">
+                <div class="avatar-circle">
+                    <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
+                </div>
+                <div class="name">Wang Chu</div>
+            </div>
+
+            <!-- Yolanda -->
+            <div class="map-icon Yolanda">
+                <img src="https://img.icons8.com/ios-filled/50/000000/marker.png" alt="Pin" />
+            </div>
+            <div class="avatar Yolanda">
+                <div class="avatar-circle">
+                    <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
+                </div>
+                <div class="name">Yolanda</div>
+            </div>
+
+            <!-- Anqu -->
+            <div class="map-icon Anqu">
+                <img src="https://img.icons8.com/ios-filled/50/000000/marker.png" alt="Pin" />
+            </div>
+            <div class="avatar Anqu">
+                <div class="avatar-circle">
+                    <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
+                </div>
+                <div class="name">Anqu</div>
+            </div>
+        </div>
+
+        <!-- Friend list -->
+        <div class="friend-list">
+            <h2>Friend List</h2>
+            <div class="friend-item">
+                <div class="friend-left">
+                    <div class="avatar-circle"><img src="https://img.icons8.com/ios-filled/50/800080/user.png" /></div>
+                    <span>Friends</span>
+                </div>
+                <button>Chat</button>
+            </div>
+            <div class="friend-item">
+                <div class="friend-left">
+                    <div class="avatar-circle"><img src="https://img.icons8.com/ios-filled/50/800080/user.png" /></div>
+                    <span>Friends</span>
+                </div>
+                <button>Chat</button>
+            </div>
+            <div class="friend-item">
+                <div class="friend-left">
+                    <div class="avatar-circle"><img src="https://img.icons8.com/ios-filled/50/800080/user.png" /></div>
+                    <span>Friends</span>
+                </div>
+                <button>Chat</button>
+            </div>
+            <div class="friend-item">
+                <div class="friend-left">
+                    <div class="avatar-circle"><img src="https://img.icons8.com/ios-filled/50/800080/user.png" /></div>
+                    <span>Friends</span>
+                </div>
+                <button>Chat</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
