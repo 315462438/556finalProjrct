@@ -488,6 +488,27 @@
         });
     </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const friendListContainer = document.querySelector('.friend-list');
+        const friends = JSON.parse(localStorage.getItem('friends') || '[]');
+
+        friends.forEach(friend => {
+            const friendItem = document.createElement('div');
+            friendItem.className = 'friend';
+            friendItem.innerHTML = `
+                <div class="avatar">
+                    <div class="avatar-circle">
+                        <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
+                    </div>
+                </div>
+                <div>${friend}</div>
+                <div class="chat-btn" onclick="startChat('${friend}')">Chat</div>
+            `;
+            friendListContainer.appendChild(friendItem);
+        });
+    });
+</script>
 
 </body>
 
