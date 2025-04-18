@@ -11,19 +11,30 @@
       padding: 0;
       font-family: Inter, Roboto, sans-serif;
       background: white;
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
     }
 
     .container {
       max-width: 960px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 72px 20px 20px;
     }
 
     .avatar-container {
       display: flex;
       justify-content: center;
-      margin-top: 48px;
-      margin-bottom: 72px;
+      margin-bottom: 48px;
     }
 
     .avatar-circle {
@@ -32,16 +43,9 @@
       background: white;
       border-radius: 50%;
       border: 1px solid black;
-      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .avatar-inner {
-      width: 105px;
-      height: 96px;
-      background: #4F378A;
     }
 
     .row {
@@ -57,27 +61,40 @@
       color: black;
     }
 
-    .value {
+    .value,
+    .text-box {
+      flex: 1;
       font-size: 16px;
-      color: black;
+      padding: 8px;
+      border: 1px solid transparent;
     }
 
     .text-box {
-      width: 100%;
-      height: 176px;
+      min-height: 120px;
       background: white;
-      opacity: 0.23;
-      border: 1px solid black;
-      margin-bottom: 32px;
+      resize: vertical;
+      overflow: auto;
+    }
+
+    .editable {
+      border-color: #ccc;
     }
 
     .edit-btn {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 22px;
-      color: #080808;
+      gap: 4px;
+      font-size: 18px;
+      background: none;
+      border: none;
       cursor: pointer;
+      color: #080808;
+    }
+
+    .centered {
+      display: flex;
+      justify-content: center;
+      margin: 40px 0;
     }
 
     .bottom-actions {
@@ -100,65 +117,92 @@
       background: white;
       cursor: pointer;
     }
-
-    .centered {
-      display: flex;
-      justify-content: center;
-      margin-top: 40px;
-    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- Close button -->
+  <button class="close-btn" onclick="window.location.href='main.html'">✕</button>
 
-    <!-- 头像 -->
+  <div class="container">
     <div class="avatar-container">
       <div class="avatar-circle">
         <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
       </div>
     </div>
 
-    <!-- 用户名 -->
     <div class="row">
       <div class="label">Username</div>
-      <div class="value">username1</div>
-      <div class="edit-btn">
+      <div class="value" id="username" contenteditable="false"></div>
+      <button class="edit-btn" data-target="username">
         <span class="material-icons">edit</span>
-        <span>edit</span>
-      </div>
+        <span>Edit</span>
+      </button>
     </div>
 
-    <!-- 邮箱 -->
     <div class="row">
       <div class="label">Email</div>
-      <div class="value">u1@email</div>
-      <div class="edit-btn">
+      <div class="value" id="email" contenteditable="false"></div>
+      <button class="edit-btn" data-target="email">
         <span class="material-icons">edit</span>
-        <span>edit</span>
-      </div>
+        <span>Edit</span>
+      </button>
     </div>
 
-    <!-- 自我介绍 -->
     <div class="row" style="align-items: flex-start;">
       <div class="label">Self-intro</div>
-      <div class="text-box"></div>
-      <div class="edit-btn" style="align-self: flex-start;">
+      <div class="text-box" id="selfintro" contenteditable="false"></div>
+      <button class="edit-btn" data-target="selfintro" style="align-self: flex-start;">
         <span class="material-icons">edit</span>
-        <span>edit</span>
-      </div>
+        <span>Edit</span>
+      </button>
     </div>
 
-    <!-- 中间按钮 -->
     <div class="centered">
       <button class="btn">Followed forums</button>
     </div>
-
-    <!-- 底部导航 -->
-    <div class="bottom-actions">
-      <div class="value">Privacy Policy</div>
-      <div class="value">Log out</div>
-    </div>
-
   </div>
+
+  <div class="bottom-actions">
+    <div>Privacy Policy</div>
+    <div style="cursor: pointer;" onclick="localStorage.removeItem('session'); window.location.href='login.html'">
+      Log out
+    </div>
+  </div>
+
+  <script>
+    // Load saved data
+    ['username', 'email', 'selfintro'].forEach(key => {
+      const val = localStorage.getItem(key);
+      if (val !== null) {
+        document.getElementById(key).innerText = val;
+      } else if (key === 'username') {
+        document.getElementById('username').innerText = 'username1';
+      } else if (key === 'email') {
+        document.getElementById('email').innerText = 'u1@email';
+      }
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const el = document.getElementById(targetId);
+        const isEditing = el.isContentEditable;
+        if (!isEditing) {
+          el.contentEditable = 'true';
+          el.classList.add('editable');
+          el.focus();
+          btn.querySelector('span:last-child').textContent = 'Save';
+          btn.querySelector('.material-icons').textContent = 'save';
+        } else {
+          el.contentEditable = 'false';
+          el.classList.remove('editable');
+          btn.querySelector('span:last-child').textContent = 'Edit';
+          btn.querySelector('.material-icons').textContent = 'edit';
+          // Persist changes
+          localStorage.setItem(targetId, el.innerText.trim());
+        }
+      });
+    });
+  </script>
 </body>
 </html>
