@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friend Profile</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 40px;
+      font-family: Arial, sans-serif;
+      background: white;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Top right Add Friend Button */
+    .add-friend-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      background-color: #2C2C2C;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* Avatar */
+    .avatar {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      margin-bottom: 40px;
+    }
+
+    .avatar-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid #4F378A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-icon::before {
+      content: "👤";
+      font-size: 28px;
+      color: #4F378A;
+    }
+
+    /* Info layout */
+    .info-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .info-row label {
+      width: 100px;
+      font-size: 16px;
+      color: #222;
+    }
+
+    .info-row span {
+      font-size: 16px;
+      color: #111;
+    }
+
+    /* Self-info block */
+    .info-text {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .info-text label {
+      width: 100px;
+      font-size: 16px;
+      color: #222;
+      margin-top: 6px;
+    }
+
+    .info-box {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid black;
+      background: white;
+      min-height: 150px;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 600px) {
+      .add-friend-btn {
+        position: static;
+        display: block;
+        margin-left: auto;
+        margin-bottom: 20px;
+      }
+
+      .info-row,
+      .info-text {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .info-row label,
+      .info-text label {
+        width: 100%;
+        margin-bottom: 6px;
+      }
+
+      .info-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Add Friend button -->
+    <button class="add-friend-btn">Add Friend</button>
+
+    <!-- Avatar -->
+    <div class="avatar">
+      <div class="avatar-icon"></div>
+    </div>
+
+    <!-- Username -->
+    <div class="info-row">
+      <label>Username:</label>
+      <span>TD</span>
+    </div>
+
+    <!-- Email -->
+    <div class="info-row">
+      <label>Email:</label>
+      <span>1234@gmail.com</span>
+    </div>
+
+    <!-- Self Info -->
+    <div class="info-text">
+      <label>Self-info:</label>
+      <div class="info-box">I'm TD, a proud card game master and part-time wizard of spreadsheets. Love coffee and concurrency ☕✨</div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector('.add-friend-btn').addEventListener('click', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const user = urlParams.get('user');
+      if (user) {
+        let friends = JSON.parse(localStorage.getItem('friends') || '[]');
+        if (!friends.includes(user)) {
+          friends.push(user);
+          localStorage.setItem('friends', JSON.stringify(friends));
+          alert(user + ' has been added to your friends list!');
+        } else {
+          alert(user + ' is already in your friends list.');
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
