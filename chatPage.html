@@ -206,18 +206,18 @@
     <div class="chat-container">
       <div class="message left">
         <div class="avatar">A</div>
-        <div class="bubble">你好，这是微信风格的聊天气泡</div>
+        <div class="bubble">Hi!</div>
       </div>
 
       <div class="message right">
-        <div class="avatar">我</div>
-        <div class="bubble">好耶！这个看起来很像微信👍</div>
+        <div class="avatar">Me</div>
+        <div class="bubble">Hello! It's nice to meet you👍</div>
       </div>
     </div>
 
     <div class="input-area">
-      <input type="text" placeholder="Type a message...">
-      <button>Send</button>
+      <input type="text" id="chatInput" placeholder="Type a message...">
+      <button id="sendBtn">Send</button>
     </div>
   </div>
   <script>
@@ -233,7 +233,7 @@
       const leftBubble = document.querySelector(".message.left .bubble");
 
       if (leftAvatar) leftAvatar.textContent = user;
-      if (leftBubble) leftBubble.textContent = `你好，我是 ${user}`;
+      if (leftBubble) leftBubble.textContent = `Hi, I'm ${user}`;
     });
   </script>
   <script>
@@ -251,7 +251,31 @@
       const leftBubble = document.querySelector(".message.left .bubble");
 
       if (leftAvatar) leftAvatar.textContent = user;
-      if (leftBubble) leftBubble.textContent = `你好，我是 ${user}`;
+      if (leftBubble) leftBubble.textContent = `Hi, I'm ${user}`;
+
+      // 点击 send 后添加消息气泡
+      const sendBtn = document.getElementById("sendBtn");
+      const input = document.getElementById("chatInput");
+      const chatContainer = document.querySelector(".chat-container");
+
+      sendBtn.addEventListener("click", () => {
+        const text = input.value.trim();
+        if (!text) return;
+
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "message right";
+        messageDiv.innerHTML = `
+        <div class="avatar">Me</div>
+        <div class="bubble">${text}</div>
+      `;
+        chatContainer.appendChild(messageDiv);
+        input.value = "";
+        chatContainer.scrollTop = chatContainer.scrollHeight; // 滚到底部
+      });
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendBtn.click();
+      });
+
     });
   </script>
 
