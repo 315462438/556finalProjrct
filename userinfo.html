@@ -170,24 +170,27 @@
   </div>
 
   <script>
-    // Load saved data
-    ['username','email','selfintro'].forEach(key => {
-      const val = localStorage.getItem(key);
-      if (val !== null) {
-        document.getElementById(key).innerText = val;
-      } else if (key === 'username') {
-        document.getElementById('username').innerText = 'username1';
-      } else if (key === 'email') {
-        document.getElementById('email').innerText = 'u1@email';
-      }
-    });
+    // Redirect if not logged in
+    const sessionUser = localStorage.getItem('session');
+    if (!sessionUser) {
+      window.location.href = 'login.html';
+    }
 
+    // Load account list and find current user
+    const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+    const account = accounts.find(a => a.username === sessionUser);
+
+    // Populate fields
+    document.getElementById('username').innerText = account?.username || '';
+    document.getElementById('email').innerText    = account?.email    || '';
+    document.getElementById('selfintro').innerText= account?.selfintro|| '';
+
+    // Edit/save handlers
     document.querySelectorAll('.edit-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const el = document.getElementById(targetId);
-        const isEditing = el.isContentEditable;
-        if (!isEditing) {
+        const key = btn.getAttribute('data-target'); 
+        const el  = document.getElementById(key);
+        if (!el.isContentEditable) {
           el.contentEditable = 'true';
           el.classList.add('editable');
           el.focus();
@@ -198,8 +201,9 @@
           el.classList.remove('editable');
           btn.querySelector('span:last-child').textContent = 'Edit';
           btn.querySelector('.material-icons').textContent = 'edit';
-          // Persist changes
-          localStorage.setItem(targetId, el.innerText.trim());
+          // Save back to this user's account and persist
+          account[key] = el.innerText.trim();
+          localStorage.setItem('accounts', JSON.stringify(accounts));
         }
       });
     });
