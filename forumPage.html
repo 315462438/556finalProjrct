@@ -124,68 +124,16 @@
 
         <!-- 分隔线 -->
         <div class="divider"></div>
-        <div class="post-list" id="post-list"></div>
+        
 
         <!-- Create a Post 行（独立） -->
         <div class="row" style="justify-content: flex-end; margin-bottom: 20px;">
             <button class="btn" onclick="window.location.href='createPost.html'">Create a Post</button>
         </div>
 
-        <!-- 主内容区域 -->
-        <div class="content">
+    <div class="post-list" id="post-list"></div>
 
-            <!-- 左侧头像 -->
-            <div class="avatar-block">
-                <span class="material-icons avatar-icon">person</span>
-                <div style="margin-top: 8px; font-size: 14px;">Sam</div>
-            </div>
-
-            <!-- 内容卡片 -->
-            <div class="main-card">
-                <div class="post-header">Housing Options context</div>
-
-                <div class="image-block">
-                    <span class="material-icons md-36">image</span>
-                </div>
-
-                <div class="icon-bar">
-                    <div class="icon-label">
-                        <span class="material-icons">favorite_border</span> 2
-                    </div>
-                    <div class="icon-label">
-                        <span class="material-icons">chat_bubble_outline</span> 2
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 主内容区域 -->
-        <div class="content">
-
-            <!-- 左侧头像 -->
-            <div class="avatar-block">
-                <span class="material-icons avatar-icon">person</span>
-                <div style="margin-top: 8px; font-size: 14px;">Kate</div>
-            </div>
-
-            <!-- 内容卡片 -->
-            <div class="main-card">
-                <div class="post-header">Looking for a Roommate</div>
-
-                <div class="image-block">
-                    <span class="material-icons md-36">image</span>
-                </div>
-
-                <div class="icon-bar">
-                    <div class="icon-label">
-                        <span class="material-icons">favorite_border</span> 2
-                    </div>
-                    <div class="icon-label">
-                        <span class="material-icons">chat_bubble_outline</span> 2
-                    </div>
-                </div>
-            </div>
-        </div>
+       
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -225,8 +173,8 @@
         </div>
     `;
 
-                postList.appendChild(wrapper);
-                //postList.prepend(wrapper); // 🔁 添加到顶部（最新在上）
+               // postList.appendChild(wrapper);
+                postList.prepend(wrapper); // 🔁 添加到顶部（最新在上）
 
             });
 
