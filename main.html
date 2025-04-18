@@ -2,515 +2,341 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UI Layout Adjusted</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Inter, Roboto, sans-serif;
-            background: white;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Layout Adjusted</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, Roboto, sans-serif;
+      background: white;
+    }
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 20px;
-        }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+    }
 
-       .top-bar {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px 0;
-}
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+    }
 
-.search-left {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-}
+    .search-left {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
 
-.location-icon {
-    font-size: 28px;
-}
+    .location-icon {
+      font-size: 28px;
+    }
 
-.search-input {
-    flex: 1;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
+    .search-input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
 
-.search-btn {
-    padding: 12px 24px;
-    font-size: 16px;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-}
+    .search-btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-.user-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.avatar-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: radial-gradient(circle at center, #5E35B1 50%, transparent 50%);
-}
+    .avatar-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, #5E35B1 50%, transparent 50%);
+    }
 
+    .main-section {
+      display: flex;
+      gap: 24px;
+    }
 
-        .search-section {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .main-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
-        .main-section {
-            display: flex;
-            gap: 24px;
-        }
+    .recommendations,
+    .forums,
+    .articles {
+      box-shadow: 0 0 1px black;
+      padding: 16px;
+      background: white;
+    }
 
-        .main-left {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
-        .recommendations,
-        .forums,
-        .articles {
-            box-shadow: 0 0 1px black;
-            padding: 16px;
-            background: white;
-        }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
 
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+    .circle-button {
+      width: 75px;
+      height: 75px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
+    .circle {
+      width: 56px;
+      height: 56px;
+      background: #D9D9D9;
+      border-radius: 999px;
+      /* 新增：让图标在圆中水平垂直居中 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .circle-button {
-            width: 75px;
-            height: 75px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .label {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #322828;
+      text-align: center;
+    }
 
-        .circle {
-            width: 56px;
-            height: 56px;
-            background: #D9D9D9;
-            border-radius: 999px;
-        }
+    .friend-list {
+      width: 300px;
+      box-shadow: 0 0 1px black;
+      background: white;
+      padding: 16px;
+      flex-shrink: 0;
+    }
 
-        .label {
-            margin-top: 6px;
-            font-size: 14px;
-            color: #322828;
-            text-align: center;
-        }
+    .friend {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
 
-        .friend-list {
-            width: 300px;
-            box-shadow: 0 0 1px black;
-            background: white;
-            padding: 16px;
-            flex-shrink: 0;
-        }
+    .avatar {
+      width: 59px;
+      height: 59px;
+      border-radius: 100px;
+      background: white;
+      box-shadow: 0 0 1px black;
+    }
 
-        .friend {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
+    .chat-btn {
+      padding: 8px 16px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+    }
 
-        .avatar {
-            width: 59px;
-            height: 59px;
-            border-radius: 100px;
-            background: white;
-            box-shadow: 0 0 1px black;
-        }
+    .article-block {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
 
-        .chat-btn {
-            padding: 8px 16px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-            cursor: pointer;
-        }
+    .article-img {
+      width: 200px;
+      height: 150px;
+      background: #ABAAAA;
+    }
 
-        .article-block {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
+    .article-content {
+      flex-grow: 1;
+    }
 
-        .article-img {
-            width: 200px;
-            height: 150px;
-            background: #ABAAAA;
-        }
+    .article-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
 
-        .article-content {
-            flex-grow: 1;
-        }
+    .article-body {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333;
+    }
 
-        .article-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .article-body {
-            font-size: 14px;
-            line-height: 1.5;
-            color: #333;
-        }
-
-        .forum-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
+    .forum-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
     }
 
     .create-btn {
-        padding: 6px 12px;
-        background: white;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 14px;
+      padding: 6px 12px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
     }
-    .friend-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.friend-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.avatar{
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: white;
-  
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.avatar-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: white;
-  
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.avatar-circle img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.friend-left span {
-  font-size: 16px;
-}
-
-.friend-item button {
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 14px;
-}
-.circle {
-  width: 56px;
-  height: 56px;
-  background: #D9D9D9;
-  border-radius: 999px;
-  display: flex;               /* 使其成为 Flex 容器 */
-  align-items: center;         /* 垂直居中 */
-  justify-content: center;     /* 水平居中 */
-}
-
-
-
-    </style>
+  </style>
 </head>
 
 <body>
-    <!-- 会话检查，未登录则跳转到 login.html -->
-    <script>
-      if (!localStorage.getItem('session')) {
-        window.location.href = 'login.html';
-      }
-    </script>
+  <!-- 会话检查，未登录则跳转到 login.html -->
+  <script>
+    if (!localStorage.getItem('session')) {
+      window.location.href = 'login.html';
+    }
+  </script>
 
-    <div class="container">
+  <div class="container">
     <div class="top-bar">
-        <div class="search-left">
-            <span class="location-icon" onclick="window.location.href='map.html'">📍</span>
-        </div>
-        <input class="search-input" type="text" placeholder="Hinted search text" />
-        <button class="search-btn">Search</button>
-        <!-- 将头像包裹在链接中，点击跳转到 userinfo.html -->
-        <a href="userinfo.html" style="text-decoration: none;">
-          <div class="user-avatar">
-              <div class="avatar-circle">
-                  <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
-              </div>
+      <div class="search-left">
+        <span class="location-icon" onclick="window.location.href='map.html'">📍</span>
+      </div>
+      <input class="search-input" type="text" placeholder="Hinted search text" />
+      <button class="search-btn">Search</button>
+      <!-- 将头像包裹在链接中，点击跳转到 userinfo.html -->
+      <a href="userinfo.html" style="text-decoration: none;">
+        <div class="user-avatar">
+          <div class="avatar-circle">
+            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
           </div>
-        </a>
-
+        </div>
+      </a>
     </div>
 
-
-
-        <!-- ✅ Main content and Friend List side-by-side -->
-        <div class="main-section">
-            <div class="main-left">
-                <div class="recommendations">
-                    <div class="section-title">Today Recommendations</div>
-                    <div class="grid">
-                        <div class="circle-button">
-                            <div class="circle"></div>
-                            <div class="label">Living</div>
-                        </div>
-                        <div class="circle-button">
-                            <div class="circle"></div>
-                            <div class="label">Basketball</div>
-                        </div>
-                    </div>
-                </div>
-<div class="forums">
-    <!-- 顶部标题 + 按钮 -->
-    <div class="forum-header">
-        <div class="section-title">Forums:</div>
-        <div class="forum-actions">
-            <button onclick="window.location.href='createForum.html'">Create a new one</button>
-            <button onclick="prevPage()">&#x3c;</button>
-            <button onclick="nextPage()">&#x3e;</button>
+    <!-- ✅ Main content and Friend List side-by-side -->
+    <div class="main-section">
+      <div class="main-left">
+        <div class="recommendations">
+          <div class="section-title">Today Recommendations</div>
+          <div class="grid">
+            <div class="circle-button">
+              <div class="circle"></div>
+              <div class="label">Living</div>
+            </div>
+            <div class="circle-button">
+              <div class="circle"></div>
+              <div class="label">Basketball</div>
+            </div>
+          </div>
         </div>
+
+        <div class="forums">
+          <!-- 顶部标题 + 按钮 -->
+          <div class="forum-header">
+            <div class="section-title">Forums:</div>
+            <div class="forum-actions">
+              <button onclick="window.location.href='createForum.html'">Create a new one</button>
+              <button onclick="prevPage()">&#x3c;</button>
+              <button onclick="nextPage()">&#x3e;</button>
+            </div>
+          </div>
+
+          <!-- 横向圆圈排布 -->
+          <div class="grid" id="forum-grid"></div>
+        </div>
+
+        <div class="articles">
+          <div class="article-block">
+            <div class="article-img"></div>
+            <div class="article-content">
+              <div class="article-title">Fitness</div>
+              <div class="article-body">what is your go-to pre/post workout meal? Share your healthy...</div>
+            </div>
+          </div>
+          <div class="article-block">
+            <div class="article-img"></div>
+            <div class="article-content">
+              <div class="article-title">Computer Science</div>
+              <div class="article-body">CS Elective Recommendations! Not sure what to take?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ Right-side Friend List -->
+      <div class="friend-list">
+        <div class="section-title">Friend List</div>
+        <!-- 好友列表由脚本动态加载 -->
+      </div>
     </div>
+  </div>
 
-    <!-- 横向圆圈排布 -->
-    <div class="grid" id="forum-grid">
-        <div class="circle-button" onclick="window.location.href='forumPage.html'">
-            <div class="circle">
-               
-            </div>
-            <div class="label">Living</div>
-        </div>
-        <div class="circle-button">
-            <div class="circle"></div>
-            <div class="label">Basketball</div>
-        </div>
-        <div class="circle-button">
-            <div class="circle">
-               
-            </div>
-            <div class="label">ComSci</div>
-        </div>
-        <div class="circle-button">
-            <div class="circle"></div>
-            <div class="label">Fishing</div>
-        </div>
-        <div class="circle-button">
-            <div class="circle"></div>
-            <div class="label">Tennis</div>
-        </div>
-        <div class="circle-button">
-            <div class="circle"></div>
-            <div class="label">Badminton</div>
-        </div>
-    </div>
-</div>
+  <!-- 渲染论坛列表 -->
+  <script>
+    const defaultForums = ["Living", "Basketball", "ComSci", "Fishing", "Tennis", "Badminton"];
+    const saved = JSON.parse(localStorage.getItem("forums") || "[]");
+    const savedForums = saved.map(item => typeof item === "string" ? item : item.title);
+    const allForums = [...defaultForums, ...savedForums];
 
-
-                <div class="articles">
-                    <div class="article-block">
-                        <div class="article-img"></div>
-                        <div class="article-content">
-                            <div class="article-title">Fitness</div>
-                            <div class="article-body">what is your go-to pre/post workout meal? Share your healthy...</div>
-                        </div>
-                    </div>
-                    <div class="article-block">
-                        <div class="article-img"></div>
-                        <div class="article-content">
-                            <div class="article-title">Computer Science</div>
-                            <div class="article-body">CS Elective Recommandations! Not sure what to take?</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ✅ Right-side Friend List -->
-            <div class="friend-list">
-                <div class="section-title">Friend List</div>
-                <div class="friend">
-                    <div class="avatar">
-                        <div class="avatar-circle">
-                            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
-                        </div>
-                    </div>
-                    <div>Friends</div>
-                    <div class="chat-btn">Chat</div>
-                  
-                </div>
-                <div class="friend">
-                    <div class="avatar">
-                        <div class="avatar-circle">
-                            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
-                        </div>
-                    </div>
-                    <div>Friends</div>
-                    <div class="chat-btn">Chat</div>
-                   
-                </div>
-                <div class="friend">
-                    <div class="avatar">
-                        <div class="avatar-circle">
-                            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
-                        </div>
-                    </div>
-                    <div>Friends</div>
-                    <div class="chat-btn">Chat</div>
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const forumGrid = document.getElementById("forum-grid");
-            const savedForums = JSON.parse(localStorage.getItem("forums") || "[]");
-
-            savedForums.forEach((forumTitle) => {
-                const forumDiv = document.createElement("div");
-                forumDiv.className = "circle-button";
-                forumDiv.innerHTML = `
-            <div class="circle"></div>
-            <div class="label">${forumTitle}</div>
-          `;
-                forumGrid.appendChild(forumDiv);
-            });
-        });
-    </script> -->
-
-    <script>
-        const defaultForums = ["Living", "Basketball", "ComSci", "Fishing", "Tennis", "Badminton"];
-        const savedForums = JSON.parse(localStorage.getItem("forums") || "[]");
-        const allForums = [...defaultForums, ...savedForums];
-
-        const itemsPerPage = 10;
-        let currentPage = 0;
-
-        function renderForums() {
-            const grid = document.getElementById("forum-grid");
-            grid.innerHTML = "";
-            const start = currentPage * itemsPerPage;
-            const end = start + itemsPerPage;
-            const current = allForums.slice(start, end);
-
-            current.forEach(title => {
-                const div = document.createElement("div");
-                div.className = "circle-button";
-
-                const link = title === "Living" ? `onclick="window.location.href='forumPage.html'"` : "";
-
-                div.innerHTML = `
-        <div class="circle" ${link}>
+    function renderForums() {
+      const grid = document.getElementById("forum-grid");
+      grid.innerHTML = "";
+      allForums.forEach(title => {
+        const div = document.createElement("div");
+        div.className = "circle-button";
+        const link = title === "Living" ? `onclick="window.location.href='forumPage.html'"` : "";
+        div.innerHTML = `
+          <div class="circle" ${link}>
             <img src="https://img.icons8.com/ios-filled/24/000000/home.png"/>
-        </div>
-        <div class="label">${title}</div>
-    `;
-                grid.appendChild(div);
-            });
+          </div>
+          <div class="label">${title}</div>
+        `;
+        grid.appendChild(div);
+      });
+    }
 
-        }
+    document.addEventListener("DOMContentLoaded", renderForums);
+  </script>
 
-        function nextPage() {
-            const maxPage = Math.floor(allForums.length / itemsPerPage);
-            if (currentPage < maxPage) {
-                currentPage++;
-                renderForums();
-            }
-        }
-
-        function prevPage() {
-            if (currentPage > 0) {
-                currentPage--;
-                renderForums();
-            }
-        }
-
-        // 初次渲染
-        document.addEventListener("DOMContentLoaded", () => {
-            renderForums();
-        });
-    </script>
-
-<script>
+  <!-- 动态渲染好友列表 -->
+  <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const friendListContainer = document.querySelector('.friend-list');
-        const friends = JSON.parse(localStorage.getItem('friends') || '[]');
-
-        friends.forEach(friend => {
-            const friendItem = document.createElement('div');
-            friendItem.className = 'friend';
-            friendItem.innerHTML = `
-                <div class="avatar">
-                    <div class="avatar-circle">
-                        <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
-                    </div>
-                </div>
-                <div>${friend}</div>
-                <div class="chat-btn" onclick="startChat('${friend}')">Chat</div>
-            `;
-            friendListContainer.appendChild(friendItem);
-        });
+      const friendListContainer = document.querySelector('.friend-list');
+      const friends = JSON.parse(localStorage.getItem('friends') || '[]');
+      friends.forEach(friend => {
+        const friendItem = document.createElement('div');
+        friendItem.className = 'friend';
+        friendItem.innerHTML = `
+          <div class="avatar">
+            <div class="avatar-circle">
+              <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
+            </div>
+          </div>
+          <div>${friend}</div>
+          <div class="chat-btn" onclick="startChat('${friend}')">Chat</div>
+        `;
+        friendListContainer.appendChild(friendItem);
+      });
     });
-</script>
-
+  </script>
 </body>
 
 </html>
-```  :contentReference[oaicite:0]{index=0}&#8203;:contentReference[oaicite:1]{index=1}
