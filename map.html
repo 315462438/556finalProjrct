@@ -307,31 +307,36 @@
                     <div class="avatar-circle"><img src="https://img.icons8.com/ios-filled/50/800080/user.png" /></div>
                     <span>Friends</span>
                 </div>
-                <button>Chat</button>
+                <button onclick="startChat('TD')">Chat</button>
             </div>
             <div class="friend-item">
                 <div class="friend-left">
                     <div class="avatar-circle"><img src="https://img.icons8.com/ios-filled/50/800080/user.png" /></div>
                     <span>Friends</span>
                 </div>
-                <button>Chat</button>
+                <button onclick="startChat('TD')">Chat</button>
             </div>
             <div class="friend-item">
                 <div class="friend-left">
                     <div class="avatar-circle"><img src="https://img.icons8.com/ios-filled/50/800080/user.png" /></div>
                     <span>Friends</span>
                 </div>
-                <button>Chat</button>
+                <button onclick="startChat('TD')">Chat</button>
             </div>
             <div class="friend-item">
                 <div class="friend-left">
                     <div class="avatar-circle"><img src="https://img.icons8.com/ios-filled/50/800080/user.png" /></div>
                     <span>Friends</span>
                 </div>
-                <button>Chat</button>
+                <button onclick="startChat('TD')">Chat</button>
             </div>
         </div>
     </div>
+    <script>
+        function startChat(name) {
+            window.location.href = `chatPage.html?user=${encodeURIComponent(name)}`;
+        }
+    </script>
 
 </body>
 
