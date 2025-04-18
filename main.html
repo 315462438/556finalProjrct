@@ -476,6 +476,19 @@
             renderForums();
         });
     </script>
+<script>
+    function startChat(name) {
+        window.location.href = `chatPage.html?user=${encodeURIComponent(name)}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const chatButtons = document.querySelectorAll(".chat-btn");
+        chatButtons.forEach((btn, index) => {
+            const name = `Friend${index + 1}`; // 你也可以改成真实名字
+            btn.setAttribute("onclick", `startChat('${name}')`);
+        });
+    });
+</script>
 
 
 </body>
