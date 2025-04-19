@@ -1,159 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Post</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background: white;
-            height: 100%;
-        }
-
-        .page-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            padding: 40px;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 24px;
-            font-size: 24px;
-            cursor: pointer;
-            border: none;
-            background: none;
-        }
-
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding-top: 60px;
-            /* to avoid overlap with close button */
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .input-topic {
-            font-size: 24px;
-            padding: 20px;
-            border: 1px solid black;
-            width: 100%;
-        }
-
-        .textarea-content {
-            font-size: 24px;
-            padding: 20px;
-            height: 280px;
-            border: 1px solid black;
-            width: 100%;
-            resize: none;
-        }
-
-        .textarea-wrapper {
-            position: relative;
-        }
-
-        .image-icon {
-            position: absolute;
-            bottom: 16px;
-            left: 16px;
-            width: 36px;
-            height: 36px;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .image-icon::before {
-            content: "🖼️";
-        }
-
-        .btn-publish {
-            width: 120px;
-            height: 48px;
-            font-size: 16px;
-            background: white;
-            border: 1px solid #999;
-            border-radius: 4px;
-            color: black;
-            cursor: pointer;
-        }
-
-        @media (max-width: 600px) {
-
-            .input-topic,
-            .textarea-content {
-                font-size: 18px;
-                padding: 16px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Post</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background: white; height: 100%;
+    }
+    .page-wrapper {
+      position: relative; width: 100%; height: 100%; padding: 40px;
+    }
+    .close-btn {
+      position: absolute; top: 20px; right: 24px;
+      font-size: 24px; cursor: pointer;
+      border: none; background: none;
+    }
+    .container {
+      max-width: 960px; margin: 0 auto; padding-top: 60px;
+      /* to avoid overlap with close button */
+    }
+    form {
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    .input-topic {
+      font-size: 24px; padding: 20px;
+      border: 1px solid black; width: 100%;
+    }
+    .textarea-content {
+      font-size: 24px; padding: 20px;
+      height: 280px; border: 1px solid black;
+      width: 100%; resize: none;
+    }
+    .textarea-wrapper {
+      position: relative;
+    }
+    .image-icon {
+      position: absolute; bottom: 16px; left: 16px;
+      width: 36px; height: 36px; font-size: 24px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 4px; cursor: pointer;
+    }
+    .image-icon::before { content: "🖼️"; }
+    .btn-publish {
+      width: 120px; height: 48px; font-size: 16px;
+      background: white; border: 1px solid #999;
+      border-radius: 4px; color: black; cursor: pointer;
+    }
+    @media (max-width: 600px) {
+      .input-topic, .textarea-content {
+        font-size: 18px; padding: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="page-wrapper">
+    <!-- 关闭按钮：保持 forum 参数 -->
+    <button class="close-btn" id="closeBtn">✕</button>
 
-    <div class="page-wrapper">
-        <!-- Page-level close button -->
-        <button class="close-btn"  onclick="window.location.href='forumPage.html'">✕</button>
+    <div class="container">
+      <form onsubmit="submitPost(event)">
+        <!-- 帖子标题 -->
+        <input type="text" class="input-topic" placeholder="Topic..." />
 
-        <div class="container">
-        <form onsubmit="submitPost(event)">
-            <!-- Topic input -->
-            <input type="text" class="input-topic" placeholder="Topic..." />
-        
-            <!-- Content textarea with icon -->
-            <div class="textarea-wrapper">
-                <textarea class="textarea-content" placeholder="content..."></textarea>
-                <div class="image-icon" title="Add image"></div>
-            </div>
-        
-            <!-- Publish button -->
-            <button type="submit" class="btn-publish">Publish</button>
-        </form>
-
+        <!-- 帖子内容 -->
+        <div class="textarea-wrapper">
+          <textarea class="textarea-content" placeholder="Content..."></textarea>
+          <div class="image-icon" title="Add image"></div>
         </div>
+
+        <!-- 发布 -->
+        <button type="submit" class="btn-publish">Publish</button>
+      </form>
     </div>
-    <script>
-       function submitPost(e) {
-            e.preventDefault();
-            const title = document.querySelector(".input-topic").value;
-            const content = document.querySelector(".textarea-content").value;
+  </div>
 
-            if (!title.trim() || !content.trim()) {
-                alert("Please fill in both topic and content.");
-                return;
-            }
+  <script>
+    // 读取 URL 中的 forum 参数
+    const params = new URLSearchParams(window.location.search);
+    const forum = params.get('forum') || '';
 
-            const newPost = { title, content };
-            const existingPosts = JSON.parse(localStorage.getItem("posts") || "[]");
-            existingPosts.push(newPost);
-            localStorage.setItem("posts", JSON.stringify(existingPosts));
+    // 关闭按钮跳回对应版块
+    document.getElementById('closeBtn').onclick = () => {
+      window.location.href = `forumPage.html?forum=${encodeURIComponent(forum)}`;
+    };
 
-            // 跳转到 forumPage.html 页面
-            window.location.href = "forumPage.html";
-        }
+    function submitPost(e) {
+      e.preventDefault();
+      const titleEl   = document.querySelector('.input-topic');
+      const contentEl = document.querySelector('.textarea-content');
+      const title     = titleEl.value.trim();
+      const content   = contentEl.value.trim();
 
-    </script>
+      if (!title || !content) {
+        alert('Please fill in both topic and content.');
+        return;
+      }
 
+      // 从 localStorage 读取已有帖子
+      const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+
+      // 新帖子对象：带上 forum 字段
+      const newPost = { forum, title, content, likes: 0, liked: false, comments: [] };
+      posts.push(newPost);
+      localStorage.setItem('posts', JSON.stringify(posts));
+
+      // 发布后回到对应版块页面
+      window.location.href = `forumPage.html?forum=${encodeURIComponent(forum)}`;
+    }
+  </script>
 </body>
-
 </html>
