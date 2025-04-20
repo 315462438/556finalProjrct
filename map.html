@@ -47,6 +47,21 @@
       box-sizing: border-box;
     }
 
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      margin-left: auto;
+      color: #333;
+      padding: 8px;
+      transition: transform 0.2s ease;
+    }
+
+    .close-btn:hover {
+      transform: scale(1.2);
+    }
+
     .main {
       flex: 1;
       display: flex;
@@ -79,8 +94,7 @@
       text-align: center;
     }
 
-    .map-icon img,
-    .avatar img {
+    .map-icon img {
       width: 32px;
       height: 32px;
     }
@@ -94,12 +108,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      /* 新增：隐藏溢出，裁剪头像 */
       overflow: hidden;
     }
 
     .avatar-circle img {
-      /* 新增：头像铺满并裁剪 */
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -142,7 +154,6 @@
     }
 
     .friend-left .avatar-circle {
-      background: white;
       border: 1px solid rebeccapurple;
     }
 
@@ -183,21 +194,6 @@
     .map .center-icon {
       top: 50%;
       left: 50%;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      margin-left: auto;
-      color: #333;
-      padding: 8px;
-      transition: transform 0.2s ease;
-    }
-
-    .close-btn:hover {
-      transform: scale(1.2);
     }
 
     @media (max-width: 768px) {
@@ -254,7 +250,7 @@
       <div class="avatar TD">
         <a href="profile(1).html?user=TD">
           <div class="avatar-circle">
-            <img src="https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}" alt="TD" />
+            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
           </div>
           <div class="name">TD</div>
         </a>
@@ -267,7 +263,7 @@
       <div class="avatar Wang">
         <a href="profile(1).html?user=Wang">
           <div class="avatar-circle">
-            <img src="https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}" alt="Wang" />
+            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
           </div>
           <div class="name">Wang Chu</div>
         </a>
@@ -280,7 +276,7 @@
       <div class="avatar Yolanda">
         <a href="profile(1).html?user=Yolanda">
           <div class="avatar-circle">
-            <img src="https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}" alt="Yolanda" />
+            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
           </div>
           <div class="name">Yolanda</div>
         </a>
@@ -293,7 +289,7 @@
       <div class="avatar Anqu">
         <a href="profile(1).html?user=Anqu">
           <div class="avatar-circle">
-            <img src="https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}" alt="Anqu" />
+            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
           </div>
           <div class="name">Anqu</div>
         </a>
@@ -304,7 +300,6 @@
     <!-- Friend List -->
     <div class="friend-list">
       <h2>Friend List</h2>
-      <!-- 列表内容由下面脚本动态插入 -->
     </div>
   </div>
 
@@ -312,22 +307,40 @@
     function startChat(name) {
       window.location.href = `chatPage.html?user=${encodeURIComponent(name)}`;
     }
+
     document.addEventListener("DOMContentLoaded", () => {
+      // 1) 生成或加载头像映射
+      let avatarMap = JSON.parse(localStorage.getItem('friendAvatars') || '{}');
+      const friendNames = JSON.parse(localStorage.getItem('friends') || '[]');
+      friendNames.forEach(name => {
+        if (!avatarMap[name]) {
+          avatarMap[name] = `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 1}`;
+        }
+      });
+      localStorage.setItem('friendAvatars', JSON.stringify(avatarMap));
+
+      // 2) 更新地图节点上的头像
+      ['TD', 'Wang', 'Yolanda', 'Anqu'].forEach(key => {
+        const imgEl = document.querySelector(`.avatar.${key} .avatar-circle img`);
+        if (imgEl && avatarMap[key]) {
+          imgEl.src = avatarMap[key];
+        }
+      });
+
+      // 3) 渲染右侧好友列表
       const container = document.querySelector('.friend-list');
-      container.innerHTML = '<h2>Friend List</h2>';
-      const friends = JSON.parse(localStorage.getItem('friends') || '[]');
-      friends.forEach(f => {
-        const randomAvatar = `https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}`;
+      friendNames.forEach(name => {
+        const url = avatarMap[name];
         const item = document.createElement('div');
         item.className = 'friend-item';
         item.innerHTML = `
           <div class="friend-left">
             <div class="avatar-circle">
-              <img src="${randomAvatar}" alt="${f}"/>
+              <img src="${url}" alt="${name}">
             </div>
-            <span>${f}</span>
+            <span>${name}</span>
           </div>
-          <button onclick="startChat('${f}')">Chat</button>
+          <button onclick="startChat('${name}')">Chat</button>
         `;
         container.appendChild(item);
       });
