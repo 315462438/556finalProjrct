@@ -112,14 +112,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;      /* 新增：裁剪溢出 */
+      overflow: hidden;
     }
 
     .circle img {
       width: 100%;
       height: 100%;
-      object-fit: cover;     /* 新增：铺满并裁剪 */
-      display: block;        /* 去除 img 底部空隙 */
+      object-fit: cover;
+      display: block;
     }
 
     .label {
@@ -363,7 +363,7 @@
     });
   </script>
 
-  <!-- Friend List 渲染脚本（随机 Pravatar 头像） -->
+  <!-- Friend List 渲染脚本（固定随机头像） -->
   <script>
     function startChat(user) {
       window.location.href = `chatPage.html?user=${encodeURIComponent(user)}`;
@@ -372,15 +372,20 @@
       const container = document.querySelector('.friend-list');
       container.innerHTML = '<div class="section-title">Friend List</div>';
       const friends = JSON.parse(localStorage.getItem('friends') || '[]');
+      let avatarMap = JSON.parse(localStorage.getItem('friendAvatars') || '{}');
+
       friends.forEach(f => {
-        const randomAvatar = `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 1}`;
+        if (!avatarMap[f]) {
+          avatarMap[f] = `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 1}`;
+        }
+        const url = avatarMap[f];
         const item = document.createElement('div');
         item.className = 'friend';
         item.innerHTML = `
           <div class="friend-left">
             <div class="avatar">
               <div class="avatar-circle">
-                <img src="${randomAvatar}" alt="avatar"/>
+                <img src="${url}" alt="${f}" />
               </div>
             </div>
             <span>${f}</span>
@@ -389,6 +394,8 @@
         `;
         container.appendChild(item);
       });
+
+      localStorage.setItem('friendAvatars', JSON.stringify(avatarMap));
     });
   </script>
 </body>
