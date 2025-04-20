@@ -32,6 +32,11 @@
       font-size: 14px;
       cursor: pointer;
     }
+    .btn:disabled {
+      color: gray;
+      cursor: default;
+      border-color: #eee;
+    }
     .divider {
       border-top: 1px solid #333;
       margin: 20px 0;
@@ -109,7 +114,7 @@
     <!-- 版块标题 + Follow -->
     <div class="row" style="gap: 32px;">
       <div id="forum-title" style="font-size:16px;"></div>
-      <button class="btn">Follow</button>
+      <button class="btn" id="follow-btn">Follow</button>
     </div>
 
     <div class="divider"></div>
@@ -124,26 +129,55 @@
   </div>
 
   <script>
-    // 读取 ?forum= 参数
     const params = new URLSearchParams(window.location.search);
     const forum = params.get('forum') || 'Unnamed Forum';
     document.getElementById('forum-title').innerText = forum;
 
-    // Create Post 按钮携带 forum 参数
     document.getElementById('create-post-btn').onclick = () => {
       window.location.href = `createPost.html?forum=${encodeURIComponent(forum)}`;
     };
 
-    // 加载并筛选出当前版块的帖子
+    const followBtn = document.getElementById('follow-btn');
+    const sessionUser = localStorage.getItem('session');
+    const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+    const user = accounts.find(u => u.username === sessionUser);
+
+    function updateFollowButton() {
+      if (!sessionUser || !user) {
+        followBtn.textContent = 'Follow';
+        followBtn.disabled = true;
+        return;
+      }
+
+      user.followedForums = user.followedForums || [];
+      const isFollowed = user.followedForums.includes(forum);
+      followBtn.textContent = isFollowed ? 'Followed' : 'Follow';
+      followBtn.disabled = isFollowed;
+    }
+
+    followBtn.onclick = () => {
+      if (!sessionUser || !user) {
+        alert('Please log in to follow forums.');
+        return;
+      }
+
+      if (!user.followedForums.includes(forum)) {
+        user.followedForums.push(forum);
+        localStorage.setItem('accounts', JSON.stringify(accounts));
+        followBtn.textContent = 'Followed';
+        followBtn.disabled = true;
+      }
+    };
+
+    updateFollowButton();
+
     const allPosts = JSON.parse(localStorage.getItem('posts') || '[]');
     const posts = allPosts.filter(p => p.forum === forum);
 
-    // 引用本地存储更新函数
     function savePosts() {
       localStorage.setItem('posts', JSON.stringify(allPosts));
     }
 
-    // 渲染所有帖子
     function renderPosts() {
       const postList = document.getElementById('post-list');
       if (posts.length === 0) {
@@ -152,7 +186,6 @@
       }
       postList.innerHTML = '';
       posts.forEach((post, index) => {
-        // 初始化属性
         post.likes = post.likes || 0;
         post.liked = post.liked || false;
         post.comments = post.comments || [];
@@ -196,7 +229,6 @@
       attachEventListeners();
     }
 
-    // 绑定点赞、评论切换、输入回车提交、新增及删除评论
     function attachEventListeners() {
       document.querySelectorAll('.like-btn').forEach(btn=>{
         btn.onclick = () => {
