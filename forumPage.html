@@ -172,7 +172,23 @@
     updateFollowButton();
 
     const allPosts = JSON.parse(localStorage.getItem('posts') || '[]');
-    const posts = allPosts.filter(p => p.forum === forum);
+    let posts = allPosts.filter(p => p.forum === forum);
+
+      if (posts.length === 0 &&
+                  (forum === 'Fitness' || forum === 'Computer Science')) {
+                const defaultPost = {
+forum: forum,
+                  title: forum,
+                       content: forum === 'Fitness'
+                             ? 'what is your go–to pre/post workout meal? Share your healthy...'
+                         : 'CS Elective Recommendations! Not sure what to take?',
+                           author: 'Kate',
+                               likes: 0,
+                                   liked: false,
+                                       comments: []
+                                         };
+            posts.push(defaultPost);
+          }
 
     function savePosts() {
       localStorage.setItem('posts', JSON.stringify(allPosts));
@@ -195,7 +211,12 @@
         wrapper.innerHTML = `
           <div class="avatar-block">
             <span class="material-icons avatar-icon">person</span>
-            <div style="margin-top: 8px; font-size: 14px;">User${index+1}</div>
+            <div
+          id="author-${index}"
+          style="margin-top: 8px; font-size: 14px; cursor: pointer; color: #4F378A;"
+          onclick="window.location.href='profile(1).html?user=${encodeURIComponent(post.author)}'">
+          ${post.author || 'User' + (index + 1)}
+        </div>
           </div>
           <div class="main-card">
             <div class="post-header">${post.title}</div>

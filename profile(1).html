@@ -35,6 +35,19 @@
       cursor: pointer;
     }
 
+     /* Close 按钮 */
+  .close-btn {
+    position: fixed;    /* 改成 fixed，固定在视口 */
+  right: 16px;         /* 距离左边 16px */
+  top: 16px; 
+    
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
     /* Avatar */
     .avatar {
       display: flex;
@@ -126,9 +139,17 @@
     }
   </style>
 </head>
+<script>
+  // 解析 URL ?user=...
+  const params = new URLSearchParams(window.location.search);
+  const user = params.get('user') || 'Unknown';
+  // 把上面 span 的内容替换成 user
+  document.getElementById('profile-username').innerText = user;
+</script>
 <body>
 
   <div class="container">
+    <button class="close-btn" onclick="window.history.back()">×</button>
     <!-- Add Friend button -->
     <button class="add-friend-btn">Add Friend</button>
 
@@ -140,7 +161,7 @@
     <!-- Username -->
     <div class="info-row">
       <label>Username:</label>
-      <span>TD</span>
+      <span id="profile-username">TD</span>
     </div>
 
     <!-- Email -->
@@ -162,13 +183,15 @@
       const user = urlParams.get('user');
       if (user) {
         let friends = JSON.parse(localStorage.getItem('friends') || '[]');
-        if (!friends.includes(user)) {
-          friends.push(user);
-          localStorage.setItem('friends', JSON.stringify(friends));
-          alert(user + ' has been added to your friends list!');
-        } else {
-          alert(user + ' is already in your friends list.');
-        }
+              if (!friends.includes(user)) {
+                  friends.push(user);
+                  localStorage.setItem('friends', JSON.stringify(friends));
+                  alert(user + ' has been added to your friends list!');
+                  // 添加成功后自动返回
+                    window.history.back();
+                } else {
+                  alert(user + ' is already in your friends list.');
+                }
       }
     });
   </script>
