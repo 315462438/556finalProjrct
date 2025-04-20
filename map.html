@@ -94,11 +94,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      /* 新增：隐藏溢出，裁剪头像 */
+      overflow: hidden;
     }
 
     .avatar-circle img {
-      width: 24px;
-      height: 24px;
+      /* 新增：头像铺满并裁剪 */
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .name {
@@ -140,10 +144,6 @@
     .friend-left .avatar-circle {
       background: white;
       border: 1px solid rebeccapurple;
-    }
-
-    .friend-left .avatar-circle img {
-      filter: hue-rotate(220deg);
     }
 
     .friend-left span {
@@ -254,7 +254,7 @@
       <div class="avatar TD">
         <a href="profile(1).html?user=TD">
           <div class="avatar-circle">
-            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
+            <img src="https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}" alt="TD" />
           </div>
           <div class="name">TD</div>
         </a>
@@ -267,7 +267,7 @@
       <div class="avatar Wang">
         <a href="profile(1).html?user=Wang">
           <div class="avatar-circle">
-            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
+            <img src="https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}" alt="Wang" />
           </div>
           <div class="name">Wang Chu</div>
         </a>
@@ -280,7 +280,7 @@
       <div class="avatar Yolanda">
         <a href="profile(1).html?user=Yolanda">
           <div class="avatar-circle">
-            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
+            <img src="https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}" alt="Yolanda" />
           </div>
           <div class="name">Yolanda</div>
         </a>
@@ -293,7 +293,7 @@
       <div class="avatar Anqu">
         <a href="profile(1).html?user=Anqu">
           <div class="avatar-circle">
-            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" />
+            <img src="https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}" alt="Anqu" />
           </div>
           <div class="name">Anqu</div>
         </a>
@@ -314,16 +314,16 @@
     }
     document.addEventListener("DOMContentLoaded", () => {
       const container = document.querySelector('.friend-list');
-      // 保留标题，清除其它
       container.innerHTML = '<h2>Friend List</h2>';
       const friends = JSON.parse(localStorage.getItem('friends') || '[]');
       friends.forEach(f => {
+        const randomAvatar = `https://i.pravatar.cc/150?img=${Math.floor(Math.random()*70)+1}`;
         const item = document.createElement('div');
         item.className = 'friend-item';
         item.innerHTML = `
           <div class="friend-left">
             <div class="avatar-circle">
-              <img src="https://img.icons8.com/ios-filled/50/800080/user.png"/>
+              <img src="${randomAvatar}" alt="${f}"/>
             </div>
             <span>${f}</span>
           </div>

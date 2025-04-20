@@ -103,22 +103,23 @@
       justify-content: flex-start;
     }
 
-    .circle-button {
-      width: 75px;
-      height: 75px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
+    /* 圆形容器，保留原始圆形并裁剪图片 */
     .circle {
       width: 56px;
       height: 56px;
       background: #D9D9D9;
-      border-radius: 999px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;      /* 新增：裁剪溢出 */
+    }
+
+    .circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;     /* 新增：铺满并裁剪 */
+      display: block;        /* 去除 img 底部空隙 */
     }
 
     .label {
@@ -254,24 +255,22 @@
     <div class="main-section">
       <div class="main-left">
         <div class="recommendations">
-            <div class="section-title">Today Recommendations</div>
-            <div class="grid">
-                <div class="circle-button" onclick="window.location.href='forumPage.html?forum=Living'">
-                    <div class="circle">
-                        <img src="https://img.icons8.com/ios-filled/24/000000/home.png" alt="home" />
-                    </div>
-                    <div class="label">Living</div>
-                </div>
-                <div class="circle-button" onclick="window.location.href='forumPage.html?forum=Basketball'">
-                    <div class="circle">
-                        <img src="https://img.icons8.com/ios-filled/24/000000/home.png" alt="basketball" />
-                    </div>
-                    <div class="label">Basketball</div>
-                </div>
+          <div class="section-title">Today Recommendations</div>
+          <div class="grid">
+            <div class="circle-button" onclick="window.location.href='forumPage.html?forum=Living'">
+              <div class="circle">
+                <img src="https://picsum.photos/seed/Living/56" alt="Living" />
+              </div>
+              <div class="label">Living</div>
             </div>
+            <div class="circle-button" onclick="window.location.href='forumPage.html?forum=Basketball'">
+              <div class="circle">
+                <img src="https://picsum.photos/seed/Basketball/56" alt="Basketball" />
+              </div>
+              <div class="label">Basketball</div>
+            </div>
+          </div>
         </div>
-
-
 
         <div class="forums">
           <div class="forum-header">
@@ -314,7 +313,7 @@
     </div>
   </div>
 
-  <!-- Forums 渲染脚本 -->
+  <!-- Forums 渲染脚本（随机 Picsum 图标） -->
   <script>
     const defaultForums = ["Living", "Basketball", "ComSci", "Fishing", "Tennis", "Badminton"];
     const saved = JSON.parse(localStorage.getItem("forums") || "[]");
@@ -328,11 +327,13 @@
       grid.innerHTML = "";
       const start = currentPage * itemsPerPage;
       filtered.slice(start, start + itemsPerPage).forEach(title => {
+        const seed = encodeURIComponent(title);
+        const forumImg = `https://picsum.photos/seed/${seed}/56`;
         const div = document.createElement("div");
         div.className = "circle-button";
         div.innerHTML = `
           <div class="circle" onclick="window.location.href='forumPage.html?forum=${encodeURIComponent(title)}'">
-            <img src="https://img.icons8.com/ios-filled/24/000000/home.png"/>
+            <img src="${forumImg}" alt="${title}" />
           </div>
           <div class="label">${title}</div>
         `;
@@ -362,24 +363,24 @@
     });
   </script>
 
-  <!-- Friend List 渲染脚本 -->
+  <!-- Friend List 渲染脚本（随机 Pravatar 头像） -->
   <script>
     function startChat(user) {
       window.location.href = `chatPage.html?user=${encodeURIComponent(user)}`;
     }
     document.addEventListener("DOMContentLoaded", () => {
       const container = document.querySelector('.friend-list');
-      // 保留标题，清空其它
       container.innerHTML = '<div class="section-title">Friend List</div>';
       const friends = JSON.parse(localStorage.getItem('friends') || '[]');
       friends.forEach(f => {
+        const randomAvatar = `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 1}`;
         const item = document.createElement('div');
         item.className = 'friend';
         item.innerHTML = `
           <div class="friend-left">
             <div class="avatar">
               <div class="avatar-circle">
-                <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar"/>
+                <img src="${randomAvatar}" alt="avatar"/>
               </div>
             </div>
             <span>${f}</span>
@@ -391,4 +392,5 @@
     });
   </script>
 </body>
+
 </html>
