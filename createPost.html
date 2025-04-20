@@ -21,7 +21,6 @@
     }
     .container {
       max-width: 960px; margin: 0 auto; padding-top: 60px;
-      /* to avoid overlap with close button */
     }
     form {
       display: flex; flex-direction: column; gap: 24px;
@@ -30,13 +29,14 @@
       font-size: 24px; padding: 20px;
       border: 1px solid black; width: 100%;
     }
+    .textarea-wrapper {
+      position: relative;
+      display: flex; flex-direction: column;
+    }
     .textarea-content {
       font-size: 24px; padding: 20px;
       height: 280px; border: 1px solid black;
       width: 100%; resize: none;
-    }
-    .textarea-wrapper {
-      position: relative;
     }
     .image-icon {
       position: absolute; bottom: 16px; left: 16px;
@@ -45,6 +45,15 @@
       border-radius: 4px; cursor: pointer;
     }
     .image-icon::before { content: "🖼️"; }
+    #imageInput {
+      display: none;
+    }
+    #imgPreview {
+      max-width: 100%; margin-top: 8px;
+      display: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
     .btn-publish {
       width: 120px; height: 48px; font-size: 16px;
       background: white; border: 1px solid #999;
@@ -68,10 +77,12 @@
         <!-- 帖子标题 -->
         <input type="text" class="input-topic" placeholder="Topic..." />
 
-        <!-- 帖子内容 -->
+        <!-- 帖子内容 与 图片上传 -->
         <div class="textarea-wrapper">
           <textarea class="textarea-content" placeholder="Content..."></textarea>
-          <div class="image-icon" title="Add image"></div>
+          <div class="image-icon" id="imageIcon" title="Add image"></div>
+          <input type="file" id="imageInput" accept="image/*" />
+          <img id="imgPreview" alt="Preview" />
         </div>
 
         <!-- 发布 -->
@@ -90,6 +101,25 @@
       window.location.href = `forumPage.html?forum=${encodeURIComponent(forum)}`;
     };
 
+    // 图片上传逻辑
+    const imageIcon = document.getElementById('imageIcon');
+    const imageInput = document.getElementById('imageInput');
+    const imgPreview = document.getElementById('imgPreview');
+    let selectedImageData = '';
+
+    imageIcon.addEventListener('click', () => imageInput.click());
+    imageInput.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => {
+        selectedImageData = evt.target.result;
+        imgPreview.src = selectedImageData;
+        imgPreview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
+
     function submitPost(e) {
       e.preventDefault();
       const titleEl   = document.querySelector('.input-topic');
@@ -105,8 +135,9 @@
       // 从 localStorage 读取已有帖子
       const posts = JSON.parse(localStorage.getItem('posts') || '[]');
 
-      // 新帖子对象：带上 forum 字段
+      // 新帖子对象：带上 forum 字段和可选的 image
       const newPost = { forum, title, content, likes: 0, liked: false, comments: [] };
+      if (selectedImageData) newPost.image = selectedImageData;
       posts.push(newPost);
       localStorage.setItem('posts', JSON.stringify(posts));
 
