@@ -105,6 +105,22 @@
   </style>
 </head>
 <body>
+  <script>
+    // 初始化一个默认用户 testuser
+    if (!localStorage.getItem("session") || !localStorage.getItem("accounts")) {
+      localStorage.setItem("session", "testuser");
+      localStorage.setItem("accounts", JSON.stringify([
+        {
+          username: "testuser",
+          email: "testuser@example.com",
+          selfintro: "Hi, I’m a test user!",
+          avatar: "https://img.icons8.com/ios-filled/50/800080/user.png",
+          followedForums: ["Living", "Basketball"]
+        }
+      ]));
+    }
+  </script>
+
   <div class="container">
     <!-- HOME -->
     <div class="row">

@@ -309,17 +309,13 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      // 1) 生成或加载头像映射
-      let avatarMap = JSON.parse(localStorage.getItem('friendAvatars') || '{}');
-      const friendNames = JSON.parse(localStorage.getItem('friends') || '[]');
+      const friendNames = ["TD", "Chen", "Yolanda", "Anqu"];
+      const avatarMap = {};
       friendNames.forEach(name => {
-        if (!avatarMap[name]) {
-          avatarMap[name] = `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 1}`;
-        }
+        avatarMap[name] = `https://i.pravatar.cc/150?u=${encodeURIComponent(name)}`;
       });
-      localStorage.setItem('friendAvatars', JSON.stringify(avatarMap));
 
-      // 2) 更新地图节点上的头像
+      // 更新地图头像
       ['TD', 'Wang', 'Yolanda', 'Anqu'].forEach(key => {
         const imgEl = document.querySelector(`.avatar.${key} .avatar-circle img`);
         if (imgEl && avatarMap[key]) {
@@ -327,25 +323,26 @@
         }
       });
 
-      // 3) 渲染右侧好友列表
+      // 渲染好友列表
       const container = document.querySelector('.friend-list');
       friendNames.forEach(name => {
         const url = avatarMap[name];
         const item = document.createElement('div');
         item.className = 'friend-item';
         item.innerHTML = `
-          <div class="friend-left">
-            <div class="avatar-circle">
-              <img src="${url}" alt="${name}">
-            </div>
-            <span>${name}</span>
+        <div class="friend-left">
+          <div class="avatar-circle">
+            <img src="${url}" alt="${name}">
           </div>
-          <button onclick="startChat('${name}')">Chat</button>
-        `;
+          <span>${name}</span>
+        </div>
+        <button onclick="startChat('${name}')">Chat</button>
+      `;
         container.appendChild(item);
       });
     });
   </script>
+
 </body>
 
 </html>
