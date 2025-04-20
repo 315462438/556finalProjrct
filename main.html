@@ -229,7 +229,6 @@
 </head>
 
 <body>
-  <!-- 会话检查，未登录则跳转到 login.html -->
   <script>
     if (!localStorage.getItem('session')) {
       window.location.href = 'login.html';
@@ -314,38 +313,9 @@
       </div>
     </div>
   </div>
-<!-- 
+
+  <!-- Forums 渲染脚本 -->
   <script>
-    const defaultForums = ["Living","Basketball","ComSci","Fishing","Tennis","Badminton"];
-    const saved = JSON.parse(localStorage.getItem("forums")||"[]");
-    const savedTitles = saved.map(item=>typeof item==="string"?item:item.title);
-    const allForums = [...defaultForums,...savedTitles];
-    const itemsPerPage = 12;
-    let currentPage = 0;
-
-    function renderForums(){
-      const grid = document.getElementById("forum-grid"); grid.innerHTML = "";
-      const start = currentPage*itemsPerPage;
-      allForums.slice(start,start+itemsPerPage).forEach(title=>{
-        const div=document.createElement("div"); div.className="circle-button";
-        const link=`onclick="window.location.href='forumPage.html?forum=${encodeURIComponent(title)}'"`;
-        div.innerHTML=`
-          <div class="circle" ${link}>
-            <img src="https://img.icons8.com/ios-filled/24/000000/home.png"/>
-          </div>
-          <div class="label">${title}</div>
-        `;
-        grid.appendChild(div);
-      });
-    }
-    function nextPage(){const max= Math.ceil(allForums.length/itemsPerPage)-1;currentPage=currentPage<max?currentPage+1:0;renderForums()}
-    function prevPage(){const max= Math.ceil(allForums.length/itemsPerPage)-1;currentPage=currentPage>0?currentPage-1:max;renderForums()}
-    document.addEventListener("DOMContentLoaded",renderForums);
-  </script> -->
-
-
-  <script>
-    // 保持原有 allForums 和 renderForums 定义
     const defaultForums = ["Living", "Basketball", "ComSci", "Fishing", "Tennis", "Badminton"];
     const saved = JSON.parse(localStorage.getItem("forums") || "[]");
     const savedTitles = saved.map(item => typeof item === "string" ? item : item.title);
@@ -354,61 +324,58 @@
     let currentPage = 0;
 
     function renderForums(filtered = allForums) {
-        const grid = document.getElementById("forum-grid");
-        grid.innerHTML = "";
-        const start = currentPage * itemsPerPage;
-        filtered.slice(start, start + itemsPerPage).forEach(title => {
-            const div = document.createElement("div");
-            div.className = "circle-button";
-            const link = `onclick="window.location.href='forumPage.html?forum=${encodeURIComponent(title)}'"`;
-            div.innerHTML = `
-        <div class="circle" ${link}>
-          <img src="https://img.icons8.com/ios-filled/24/000000/home.png"/>
-        </div>
-        <div class="label">${title}</div>
-      `;
-            grid.appendChild(div);
-        });
+      const grid = document.getElementById("forum-grid");
+      grid.innerHTML = "";
+      const start = currentPage * itemsPerPage;
+      filtered.slice(start, start + itemsPerPage).forEach(title => {
+        const div = document.createElement("div");
+        div.className = "circle-button";
+        div.innerHTML = `
+          <div class="circle" onclick="window.location.href='forumPage.html?forum=${encodeURIComponent(title)}'">
+            <img src="https://img.icons8.com/ios-filled/24/000000/home.png"/>
+          </div>
+          <div class="label">${title}</div>
+        `;
+        grid.appendChild(div);
+      });
     }
 
     function nextPage() {
-        const max = Math.ceil(allForums.length / itemsPerPage) - 1;
-        currentPage = currentPage < max ? currentPage + 1 : 0;
-        renderForums();
+      const max = Math.ceil(allForums.length / itemsPerPage) - 1;
+      currentPage = currentPage < max ? currentPage + 1 : 0;
+      renderForums();
     }
 
     function prevPage() {
-        const max = Math.ceil(allForums.length / itemsPerPage) - 1;
-        currentPage = currentPage > 0 ? currentPage - 1 : max;
-        renderForums();
+      const max = Math.ceil(allForums.length / itemsPerPage) - 1;
+      currentPage = currentPage > 0 ? currentPage - 1 : max;
+      renderForums();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        renderForums();
-
-        // 搜索功能
-        const searchBtn = document.querySelector(".search-btn");
-        const searchInput = document.querySelector(".search-input");
-
-        searchBtn.addEventListener("click", () => {
-            const keyword = searchInput.value.trim().toLowerCase();
-            const filtered = allForums.filter(f => f.toLowerCase().includes(keyword));
-            currentPage = 0;
-            renderForums(filtered);
-        });
+      renderForums();
+      document.querySelector(".search-btn").addEventListener("click", () => {
+        const keyword = document.querySelector(".search-input").value.trim().toLowerCase();
+        currentPage = 0;
+        renderForums(allForums.filter(f => f.toLowerCase().includes(keyword)));
+      });
     });
-</script>
+  </script>
 
+  <!-- Friend List 渲染脚本 -->
   <script>
-    function startChat(user){
-      window.location.href=`chatPage.html?user=${encodeURIComponent(user)}`;
+    function startChat(user) {
+      window.location.href = `chatPage.html?user=${encodeURIComponent(user)}`;
     }
-    document.addEventListener("DOMContentLoaded",()=>{
-      const container=document.querySelector('.friend-list');
-      const friends=JSON.parse(localStorage.getItem('friends')||'[]');
-      friends.forEach(f=>{
-        const item=document.createElement('div');item.className='friend';
-        item.innerHTML=`
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.querySelector('.friend-list');
+      // 保留标题，清空其它
+      container.innerHTML = '<div class="section-title">Friend List</div>';
+      const friends = JSON.parse(localStorage.getItem('friends') || '[]');
+      friends.forEach(f => {
+        const item = document.createElement('div');
+        item.className = 'friend';
+        item.innerHTML = `
           <div class="friend-left">
             <div class="avatar">
               <div class="avatar-circle">
@@ -424,5 +391,4 @@
     });
   </script>
 </body>
-
 </html>
