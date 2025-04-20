@@ -79,11 +79,16 @@
     }
     .image-block {
       border: 1px solid black;
-      height: 160px;
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 24px;
+      padding: 8px;
+    }
+    .image-block img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
     }
     .icon-bar {
       display: flex;
@@ -95,6 +100,7 @@
       align-items: center;
       gap: 6px;
       font-size: 18px;
+      cursor: pointer;
     }
     .material-icons.md-36 {
       font-size: 36px;
@@ -176,7 +182,7 @@
         alert('Please log in to follow forums.');
         return;
       }
-
+      user.followedForums = user.followedForums || [];
       if (!user.followedForums.includes(forum)) {
         user.followedForums.push(forum);
         localStorage.setItem('accounts', JSON.stringify(accounts));
@@ -190,21 +196,20 @@
     const allPosts = JSON.parse(localStorage.getItem('posts') || '[]');
     let posts = allPosts.filter(p => p.forum === forum);
 
-      if (posts.length === 0 &&
-                  (forum === 'Fitness' || forum === 'Computer Science')) {
-                const defaultPost = {
-forum: forum,
-                  title: forum,
-                       content: forum === 'Fitness'
-                             ? 'what is your go–to pre/post workout meal? Share your healthy...'
-                         : 'CS Elective Recommendations! Not sure what to take?',
-                           author: 'Kate',
-                               likes: 0,
-                                   liked: false,
-                                       comments: []
-                                         };
-            posts.push(defaultPost);
-          }
+    if (posts.length === 0 && (forum === 'Fitness' || forum === 'Computer Science')) {
+      const defaultPost = {
+        forum,
+        title: forum,
+        content: forum === 'Fitness'
+          ? 'what is your go–to pre/post workout meal? Share your healthy...'
+          : 'CS Elective Recommendations! Not sure what to take?',
+        author: 'Kate',
+        likes: 0,
+        liked: false,
+        comments: []
+      };
+      posts.push(defaultPost);
+    }
 
     function savePosts() {
       localStorage.setItem('posts', JSON.stringify(allPosts));
@@ -227,37 +232,37 @@ forum: forum,
         wrapper.innerHTML = `
           <div class="avatar-block">
             <span class="material-icons avatar-icon">person</span>
-            <div
-          id="author-${index}"
-          style="margin-top: 8px; font-size: 14px; cursor: pointer; color: #4F378A;"
-          onclick="window.location.href='profile(1).html?user=${encodeURIComponent(post.author)}'">
-          ${post.author || 'User' + (index + 1)}
-        </div>
+            <div id="author-${index}" style="margin-top: 8px; font-size: 14px; cursor: pointer; color: #4F378A;" onclick="window.location.href='profile(1).html?user=${encodeURIComponent(post.author)}'">
+              ${post.author || 'User' + (index + 1)}
+            </div>
           </div>
           <div class="main-card">
             <div class="post-header">${post.title}</div>
-            <div class="post-content">${post.content||''}</div>
+            <div class="post-content">${post.content || ''}</div>
             <div class="image-block">
-              <span class="material-icons md-36">image</span>
+              ${
+                post.image
+                  ? `<img src="${post.image}" alt="Post Image" />`
+                  : `<span class="material-icons md-36">image</span>`
+              }
             </div>
             <div class="icon-bar">
-              <div class="icon-label like-btn" data-index="${index}" style="cursor:pointer;">
+              <div class="icon-label like-btn" data-index="${index}">
                 <span class="material-icons">${post.liked ? 'favorite' : 'favorite_border'}</span> ${post.likes}
               </div>
-              <div class="icon-label comment-toggle" data-index="${index}" style="cursor:pointer;">
+              <div class="icon-label comment-toggle" data-index="${index}">
                 <span class="material-icons">chat_bubble_outline</span> ${post.comments.length}
               </div>
             </div>
             <div class="comment-section" style="display:none; margin-top:16px;">
               <div class="comment-list" style="margin-bottom:12px;">
-                ${post.comments.map((c,ci)=>`
+                ${post.comments.map((c,ci) => `
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                     <span>${c}</span>
                     <button class="btn delete-comment" data-pindex="${index}" data-cindex="${ci}">Delete</button>
                   </div>`).join('')}
               </div>
-              <input type="text" class="comment-input" data-index="${index}"
-                     placeholder="Add a comment..." style="width:100%; padding:6px;" />
+              <input type="text" class="comment-input" data-index="${index}" placeholder="Add a comment..." style="width:100%; padding:6px;" />
             </div>
           </div>
         `;
@@ -267,7 +272,7 @@ forum: forum,
     }
 
     function attachEventListeners() {
-      document.querySelectorAll('.like-btn').forEach(btn=>{
+      document.querySelectorAll('.like-btn').forEach(btn => {
         btn.onclick = () => {
           const i = +btn.dataset.index;
           posts[i].liked = !posts[i].liked;
@@ -276,16 +281,16 @@ forum: forum,
           renderPosts();
         };
       });
-      document.querySelectorAll('.comment-toggle').forEach(btn=>{
+      document.querySelectorAll('.comment-toggle').forEach(btn => {
         btn.onclick = () => {
           const card = btn.closest('.main-card');
           const sec = card.querySelector('.comment-section');
-          sec.style.display = sec.style.display==='none'?'block':'none';
+          sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
         };
       });
-      document.querySelectorAll('.comment-input').forEach(input=>{
+      document.querySelectorAll('.comment-input').forEach(input => {
         input.onkeypress = e => {
-          if (e.key==='Enter' && input.value.trim()) {
+          if (e.key === 'Enter' && input.value.trim()) {
             const i = +input.dataset.index;
             posts[i].comments.push(input.value.trim());
             input.value = '';
@@ -294,10 +299,11 @@ forum: forum,
           }
         };
       });
-      document.querySelectorAll('.delete-comment').forEach(btn=>{
+      document.querySelectorAll('.delete-comment').forEach(btn => {
         btn.onclick = () => {
-          const pi = +btn.dataset.pindex, ci = +btn.dataset.cindex;
-          posts[pi].comments.splice(ci,1);
+          const pi = +btn.dataset.pindex;
+          const ci = +btn.dataset.cindex;
+          posts[pi].comments.splice(ci, 1);
           savePosts();
           renderPosts();
         };
