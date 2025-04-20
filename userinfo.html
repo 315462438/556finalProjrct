@@ -93,7 +93,7 @@
     .centered {
       display: flex;
       justify-content: center;
-      margin: 40px 0;
+      margin: 40px 0 20px;
     }
 
     .bottom-actions {
@@ -116,10 +116,25 @@
       background: white;
       cursor: pointer;
     }
+
+    .followed-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+    }
+
+    .remove-btn {
+      border: 1px solid #aaa;
+      background: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      font-size: 14px;
+      color: #444;
+    }
   </style>
 </head>
 <body>
-  <!-- Close button -->
   <button class="close-btn" onclick="window.location.href='main.html'">✕</button>
 
   <div class="container">
@@ -159,6 +174,9 @@
     <div class="centered">
       <button class="btn">Followed forums</button>
     </div>
+
+    <!-- 展示关注列表 -->
+    <div id="followed-list" style="margin-top: 10px; padding: 0 20px;"></div>
   </div>
 
   <div class="bottom-actions">
@@ -170,26 +188,22 @@
   </div>
 
   <script>
-    // Redirect if not logged in
     const sessionUser = localStorage.getItem('session');
     if (!sessionUser) {
       window.location.href = 'login.html';
     }
 
-    // Load account list and find current user
     const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
     const account = accounts.find(a => a.username === sessionUser);
 
-    // Populate fields
     document.getElementById('username').innerText = account?.username || '';
-    document.getElementById('email').innerText    = account?.email    || '';
-    document.getElementById('selfintro').innerText= account?.selfintro|| '';
+    document.getElementById('email').innerText = account?.email || '';
+    document.getElementById('selfintro').innerText = account?.selfintro || '';
 
-    // Edit/save handlers
     document.querySelectorAll('.edit-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const key = btn.getAttribute('data-target'); 
-        const el  = document.getElementById(key);
+        const key = btn.getAttribute('data-target');
+        const el = document.getElementById(key);
         if (!el.isContentEditable) {
           el.contentEditable = 'true';
           el.classList.add('editable');
@@ -201,12 +215,44 @@
           el.classList.remove('editable');
           btn.querySelector('span:last-child').textContent = 'Edit';
           btn.querySelector('.material-icons').textContent = 'edit';
-          // Save back to this user's account and persist
           account[key] = el.innerText.trim();
           localStorage.setItem('accounts', JSON.stringify(accounts));
         }
       });
     });
+
+    function renderFollowedForums() {
+      const container = document.getElementById('followed-list');
+      const followed = account?.followedForums || [];
+
+      if (followed.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#888;">No followed forums yet.</p>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">Followed Forums</div>
+        <div>
+          ${followed.map(forum => `
+            <div class="followed-item">
+              <span>${forum}</span>
+              <button class="remove-btn" data-forum="${forum}">Unfollow</button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const forumToRemove = btn.getAttribute('data-forum');
+          account.followedForums = account.followedForums.filter(f => f !== forumToRemove);
+          localStorage.setItem('accounts', JSON.stringify(accounts));
+          renderFollowedForums(); // re-render
+        });
+      });
+    }
+
+    renderFollowedForums();
   </script>
 </body>
 </html>
