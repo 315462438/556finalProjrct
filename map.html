@@ -255,33 +255,38 @@
   </div>
 
   <script>
+    // 仅在首次没有 friends 时初始化默认好友
+    const defaultFriends = ["TD", "Chen", "Yolanda", "Anqu"];
+    if (localStorage.getItem('friends') === null) {
+      localStorage.setItem('friends', JSON.stringify(defaultFriends));
+    }
+  
     function startChat(name) {
       window.location.href = `chatPage.html?user=${encodeURIComponent(name)}`;
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      // Load the same friends array as main.html
+  
+    function removeFriend(name) {
       let friends = JSON.parse(localStorage.getItem('friends') || '[]');
-      const defaultFriends = ["TD", "Chen", "Yolanda", "Anqu"];
-      if (friends.length === 0) {
-        friends = defaultFriends;
-        localStorage.setItem('friends', JSON.stringify(friends));
-      }
-
-      // Build an avatar map for each friend
+      friends = friends.filter(f => f !== name);
+      localStorage.setItem('friends', JSON.stringify(friends));
+      renderFriendList();
+    }
+  
+    function renderFriendList() {
+      const container = document.querySelector('.friend-list');
+      container.innerHTML = '<h2>Friend List</h2>';
+  
+      const friends = JSON.parse(localStorage.getItem('friends') || '[]');
+  
+      // 构建头像映射并更新地图上的头像（可选）
       const avatarMap = {};
       friends.forEach(name => {
         avatarMap[name] = `https://i.pravatar.cc/150?u=${encodeURIComponent(name)}`;
+        const imgEl = document.querySelector(`.avatar.${name} .avatar-circle img`);
+        if (imgEl) imgEl.src = avatarMap[name];
       });
-
-      // Update any map avatars if names match (optional)
-      Object.keys(avatarMap).forEach(key => {
-        const imgEl = document.querySelector(`.avatar.${key} .avatar-circle img`);
-        if (imgEl) imgEl.src = avatarMap[key];
-      });
-
-      // Render the friend list panel
-      const container = document.querySelector('.friend-list');
+  
+      // 渲染侧边好友列表
       friends.forEach(name => {
         const url = avatarMap[name];
         const item = document.createElement('div');
@@ -293,11 +298,17 @@
             </div>
             <span>${name}</span>
           </div>
-          <button onclick="startChat('${name}')">Chat</button>
+          <div>
+            <button onclick="startChat('${name}')">Chat</button>
+            <button onclick="removeFriend('${name}')">Remove</button>
+          </div>
         `;
         container.appendChild(item);
       });
-    });
+    }
+  
+    document.addEventListener("DOMContentLoaded", renderFriendList);
   </script>
+  
 </body>
 </html>
