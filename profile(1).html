@@ -155,7 +155,7 @@
     <div class="info-text">
       <label>Self-info:</label>
       <div class="info-box">
-        I'm TD, a proud card game master and part-time wizard of spreadsheets. Love coffee and concurrency ☕✨
+        I'm <span id="info-username">TD</span>, a proud card game master and part-time wizard of spreadsheets. Love coffee and concurrency ☕✨
       </div>
     </div>
   </div>
@@ -165,7 +165,10 @@
     const params = new URLSearchParams(window.location.search);
     const user = params.get('user') || 'Unknown';
     document.getElementById('profile-username').innerText = user;
-
+    // 同步 info-box 中 “I'm <name>” 的名字
+    const infoNameEl = document.getElementById('info-username');
+    if (infoNameEl) infoNameEl.innerText = user;
+  
     // 点击 Add Friend
     document.querySelector('.add-friend-btn').addEventListener('click', function() {
       if (!user) return;
@@ -181,5 +184,6 @@
       window.location.href = 'main.html';
     });
   </script>
+  
 </body>
 </html>
