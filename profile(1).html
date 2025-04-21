@@ -21,7 +21,6 @@
       position: relative;
     }
 
-    /* Top right Add Friend Button */
     .add-friend-btn {
       position: absolute;
       right: 0;
@@ -35,20 +34,17 @@
       cursor: pointer;
     }
 
-     /* Close 按钮 */
-  .close-btn {
-    position: fixed;    /* 改成 fixed，固定在视口 */
-  right: 16px;         /* 距离左边 16px */
-  top: 16px; 
-    
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    line-height: 1;
-  }
+    .close-btn {
+      position: fixed;
+      right: 16px;
+      top: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+    }
 
-    /* Avatar */
     .avatar {
       display: flex;
       justify-content: center;
@@ -72,7 +68,6 @@
       color: #4F378A;
     }
 
-    /* Info layout */
     .info-row {
       display: flex;
       align-items: center;
@@ -90,7 +85,6 @@
       color: #111;
     }
 
-    /* Self-info block */
     .info-text {
       display: flex;
       align-items: flex-start;
@@ -139,62 +133,53 @@
     }
   </style>
 </head>
-<script>
-  // 解析 URL ?user=...
-  const params = new URLSearchParams(window.location.search);
-  const user = params.get('user') || 'Unknown';
-  // 把上面 span 的内容替换成 user
-  document.getElementById('profile-username').innerText = user;
-</script>
 <body>
-
   <div class="container">
     <button class="close-btn" onclick="window.history.back()">×</button>
-    <!-- Add Friend button -->
     <button class="add-friend-btn">Add Friend</button>
 
-    <!-- Avatar -->
     <div class="avatar">
       <div class="avatar-icon"></div>
     </div>
 
-    <!-- Username -->
     <div class="info-row">
       <label>Username:</label>
       <span id="profile-username">TD</span>
     </div>
 
-    <!-- Email -->
     <div class="info-row">
       <label>Email:</label>
       <span>1234@gmail.com</span>
     </div>
 
-    <!-- Self Info -->
     <div class="info-text">
       <label>Self-info:</label>
-      <div class="info-box">I'm TD, a proud card game master and part-time wizard of spreadsheets. Love coffee and concurrency ☕✨</div>
+      <div class="info-box">
+        I'm TD, a proud card game master and part-time wizard of spreadsheets. Love coffee and concurrency ☕✨
+      </div>
     </div>
   </div>
 
   <script>
+    // 获取 URL 中的 user 参数并显示
+    const params = new URLSearchParams(window.location.search);
+    const user = params.get('user') || 'Unknown';
+    document.getElementById('profile-username').innerText = user;
+
+    // 点击 Add Friend
     document.querySelector('.add-friend-btn').addEventListener('click', function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const user = urlParams.get('user');
-      if (user) {
-        let friends = JSON.parse(localStorage.getItem('friends') || '[]');
-              if (!friends.includes(user)) {
-                  friends.push(user);
-                  localStorage.setItem('friends', JSON.stringify(friends));
-                  alert(user + ' has been added to your friends list!');
-                  // 添加成功后自动返回
-                    window.history.back();
-                } else {
-                  alert(user + ' is already in your friends list.');
-                }
+      if (!user) return;
+      let friends = JSON.parse(localStorage.getItem('friends') || '[]');
+      if (!friends.includes(user)) {
+        friends.push(user);
+        localStorage.setItem('friends', JSON.stringify(friends));
+        alert(user + ' has been added to your friends list!');
+      } else {
+        alert(user + ' is already in your friends list.');
       }
+      // 回到主页面以展示最新列表
+      window.location.href = 'main.html';
     });
   </script>
-
 </body>
 </html>
