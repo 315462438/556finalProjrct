@@ -22,9 +22,7 @@
       align-items: center;
       flex-wrap: wrap;
     }
-    .row + .row {
-      margin-top: 20px;
-    }
+    .row + .row { margin-top: 20px; }
     .btn {
       border: 1px solid #ccc;
       background: white;
@@ -108,11 +106,23 @@
     .comment-section input {
       font-size: 14px;
     }
+    .comment-section {
+      margin-top: 16px;
+    }
+    .comment-list > div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .comment-input {
+      width: 100%;
+      padding: 6px;
+      box-sizing: border-box;
+    }
   </style>
 </head>
 <body>
   <script>
-    // 初始化一个默认用户 testuser
     if (!localStorage.getItem("session") || !localStorage.getItem("accounts")) {
       localStorage.setItem("session", "testuser");
       localStorage.setItem("accounts", JSON.stringify([
@@ -128,25 +138,25 @@
   </script>
 
   <div class="container">
-    <!-- HOME -->
     <div class="row">
       <button class="btn" onclick="window.location.href='main.html'">HOME</button>
     </div>
 
-    <!-- 版块标题 + Follow -->
     <div class="row" style="gap: 32px;">
       <div id="forum-title" style="font-size:16px;"></div>
       <button class="btn" id="follow-btn">Follow</button>
     </div>
 
+    <div class="row">
+      <div id="forum-description" style="font-size:14px; color:#555; margin-bottom:20px;"></div>
+    </div>
+
     <div class="divider"></div>
 
-    <!-- 发帖 -->
     <div class="row" style="justify-content: flex-end; margin-bottom: 20px;">
       <button class="btn" id="create-post-btn">Create a Post</button>
     </div>
 
-    <!-- 帖子列表 -->
     <div class="post-list" id="post-list"></div>
   </div>
 
@@ -155,60 +165,58 @@
     const forum = params.get('forum') || 'Unnamed Forum';
     document.getElementById('forum-title').innerText = forum;
 
+    const forums = JSON.parse(localStorage.getItem('forums') || '[]');
+    const thisForum = forums.find(f => f.title === forum);
+    document.getElementById('forum-description').innerText =
+      thisForum ? thisForum.content : '';
+
     document.getElementById('create-post-btn').onclick = () => {
       window.location.href = `createPost.html?forum=${encodeURIComponent(forum)}`;
     };
 
+    // Follow 按钮逻辑（保持不变）
     const followBtn = document.getElementById('follow-btn');
     const sessionUser = localStorage.getItem('session');
-    const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
-    const user = accounts.find(u => u.username === sessionUser);
+    const accounts    = JSON.parse(localStorage.getItem('accounts') || '[]');
+    const currentUser = accounts.find(u => u.username === sessionUser);
 
     function updateFollowButton() {
-      if (!sessionUser || !user) {
+      if (!currentUser) {
         followBtn.textContent = 'Follow';
         followBtn.disabled = true;
         return;
       }
-
-      user.followedForums = user.followedForums || [];
-      const isFollowed = user.followedForums.includes(forum);
-      followBtn.textContent = isFollowed ? 'Followed' : 'Follow';
-      followBtn.disabled = isFollowed;
+      currentUser.followedForums = currentUser.followedForums || [];
+      const isF = currentUser.followedForums.includes(forum);
+      followBtn.textContent = isF ? 'Followed' : 'Follow';
+      followBtn.disabled = isF;
     }
-
     followBtn.onclick = () => {
-      if (!sessionUser || !user) {
-        alert('Please log in to follow forums.');
-        return;
-      }
-      user.followedForums = user.followedForums || [];
-      if (!user.followedForums.includes(forum)) {
-        user.followedForums.push(forum);
+      if (!currentUser) return alert('Please log in to follow.');
+      if (!currentUser.followedForums.includes(forum)) {
+        currentUser.followedForums.push(forum);
         localStorage.setItem('accounts', JSON.stringify(accounts));
-        followBtn.textContent = 'Followed';
-        followBtn.disabled = true;
+        updateFollowButton();
       }
     };
-
     updateFollowButton();
 
     const allPosts = JSON.parse(localStorage.getItem('posts') || '[]');
     let posts = allPosts.filter(p => p.forum === forum);
 
     if (posts.length === 0 && (forum === 'Fitness' || forum === 'Computer Science')) {
-      const defaultPost = {
+      posts.push({
         forum,
         title: forum,
         content: forum === 'Fitness'
           ? 'what is your go–to pre/post workout meal? Share your healthy...'
           : 'CS Elective Recommendations! Not sure what to take?',
         author: 'Kate',
+        avatar: '',
         likes: 0,
         liked: false,
         comments: []
-      };
-      posts.push(defaultPost);
+      });
     }
 
     function savePosts() {
@@ -217,14 +225,14 @@
 
     function renderPosts() {
       const postList = document.getElementById('post-list');
-      if (posts.length === 0) {
+      if (!posts.length) {
         postList.innerHTML = '<p>No posts yet.</p>';
         return;
       }
       postList.innerHTML = '';
-      posts.forEach((post, index) => {
-        post.likes = post.likes || 0;
-        post.liked = post.liked || false;
+      posts.forEach((post, i) => {
+        post.likes    = post.likes || 0;
+        post.liked    = post.liked || false;
         post.comments = post.comments || [];
 
         const wrapper = document.createElement('div');
@@ -232,80 +240,79 @@
         wrapper.innerHTML = `
           <div class="avatar-block">
             <span class="material-icons avatar-icon">person</span>
-            <div id="author-${index}" style="margin-top: 8px; font-size: 14px; cursor: pointer; color: #4F378A;" onclick="window.location.href='profile(1).html?user=${encodeURIComponent(post.author)}'">
-              ${post.author || 'User' + (index + 1)}
+            <div
+              id="author-${i}"
+              style="margin-top: 8px; font-size: 14px; cursor: pointer; color: #4F378A;"
+              onclick="window.location.href='profile(1).html?user=${encodeURIComponent(post.author)}'"
+            >
+              ${post.author || ('User' + (i+1))}
             </div>
           </div>
           <div class="main-card">
             <div class="post-header">${post.title}</div>
-            <div class="post-content">${post.content || ''}</div>
-            <div class="image-block">
-              ${
-                post.image
-                  ? `<img src="${post.image}" alt="Post Image" />`
-                  : `<span class="material-icons md-36">image</span>`
-              }
-            </div>
+            <div class="post-content">${post.content}</div>
+            <div class="image-block">${
+              post.image
+                ? `<img src="${post.image}" alt="Post Image" />`
+                : `<span class="material-icons md-36">image</span>`
+            }</div>
             <div class="icon-bar">
-              <div class="icon-label like-btn" data-index="${index}">
-                <span class="material-icons">${post.liked ? 'favorite' : 'favorite_border'}</span> ${post.likes}
+              <div class="icon-label like-btn" data-index="${i}">
+                <span class="material-icons">${
+                  post.liked ? 'favorite' : 'favorite_border'
+                }</span> ${post.likes}
               </div>
-              <div class="icon-label comment-toggle" data-index="${index}">
+              <div class="icon-label comment-toggle" data-index="${i}">
                 <span class="material-icons">chat_bubble_outline</span> ${post.comments.length}
               </div>
             </div>
-            <div class="comment-section" style="display:none; margin-top:16px;">
-              <div class="comment-list" style="margin-bottom:12px;">
-                ${post.comments.map((c,ci) => `
-                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+            <div class="comment-section" style="display:none;">
+              <div class="comment-list">${
+                post.comments.map((c,ci) => `
+                  <div>
                     <span>${c}</span>
-                    <button class="btn delete-comment" data-pindex="${index}" data-cindex="${ci}">Delete</button>
-                  </div>`).join('')}
-              </div>
-              <input type="text" class="comment-input" data-index="${index}" placeholder="Add a comment..." style="width:100%; padding:6px;" />
+                    <button class="btn delete-comment" data-pindex="${i}" data-cindex="${ci}">
+                      Delete
+                    </button>
+                  </div>`).join('')
+              }</div>
+              <input type="text" class="comment-input" data-index="${i}" placeholder="Add a comment..." />
             </div>
           </div>
         `;
         postList.prepend(wrapper);
       });
-      attachEventListeners();
-    }
 
-    function attachEventListeners() {
+      // 事件绑定
       document.querySelectorAll('.like-btn').forEach(btn => {
         btn.onclick = () => {
-          const i = +btn.dataset.index;
-          posts[i].liked = !posts[i].liked;
-          posts[i].likes += posts[i].liked ? 1 : -1;
-          savePosts();
-          renderPosts();
+          const idx = +btn.dataset.index;
+          posts[idx].liked = !posts[idx].liked;
+          posts[idx].likes += posts[idx].liked ? 1 : -1;
+          savePosts(); renderPosts();
         };
       });
       document.querySelectorAll('.comment-toggle').forEach(btn => {
         btn.onclick = () => {
-          const card = btn.closest('.main-card');
-          const sec = card.querySelector('.comment-section');
+          const sec = btn.closest('.main-card').querySelector('.comment-section');
           sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
         };
       });
       document.querySelectorAll('.comment-input').forEach(input => {
         input.onkeypress = e => {
           if (e.key === 'Enter' && input.value.trim()) {
-            const i = +input.dataset.index;
-            posts[i].comments.push(input.value.trim());
+            const idx = +input.dataset.index;
+            posts[idx].comments.push(input.value.trim());
             input.value = '';
-            savePosts();
-            renderPosts();
+            savePosts(); renderPosts();
           }
         };
       });
       document.querySelectorAll('.delete-comment').forEach(btn => {
         btn.onclick = () => {
-          const pi = +btn.dataset.pindex;
-          const ci = +btn.dataset.cindex;
+          const pi = +btn.dataset.pindex, ci = +btn.dataset.cindex;
           posts[pi].comments.splice(ci, 1);
-          savePosts();
-          renderPosts();
+          savePosts(); renderPosts();
         };
       });
     }

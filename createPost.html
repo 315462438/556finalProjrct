@@ -45,9 +45,7 @@
       border-radius: 4px; cursor: pointer;
     }
     .image-icon::before { content: "🖼️"; }
-    #imageInput {
-      display: none;
-    }
+    #imageInput { display: none; }
     #imgPreview {
       max-width: 100%; margin-top: 8px;
       display: none;
@@ -69,39 +67,30 @@
 
 <body>
   <div class="page-wrapper">
-    <!-- 关闭按钮：保持 forum 参数 -->
     <button class="close-btn" id="closeBtn">✕</button>
 
     <div class="container">
       <form onsubmit="submitPost(event)">
-        <!-- 帖子标题 -->
         <input type="text" class="input-topic" placeholder="Topic..." />
-
-        <!-- 帖子内容 与 图片上传 -->
         <div class="textarea-wrapper">
           <textarea class="textarea-content" placeholder="Content..."></textarea>
           <div class="image-icon" id="imageIcon" title="Add image"></div>
           <input type="file" id="imageInput" accept="image/*" />
           <img id="imgPreview" alt="Preview" />
         </div>
-
-        <!-- 发布 -->
         <button type="submit" class="btn-publish">Publish</button>
       </form>
     </div>
   </div>
 
   <script>
-    // 读取 URL 中的 forum 参数
     const params = new URLSearchParams(window.location.search);
     const forum = params.get('forum') || '';
 
-    // 关闭按钮跳回对应版块
     document.getElementById('closeBtn').onclick = () => {
       window.location.href = `forumPage.html?forum=${encodeURIComponent(forum)}`;
     };
 
-    // 图片上传逻辑
     const imageIcon = document.getElementById('imageIcon');
     const imageInput = document.getElementById('imageInput');
     const imgPreview = document.getElementById('imgPreview');
@@ -122,26 +111,36 @@
 
     function submitPost(e) {
       e.preventDefault();
-      const titleEl   = document.querySelector('.input-topic');
-      const contentEl = document.querySelector('.textarea-content');
-      const title     = titleEl.value.trim();
-      const content   = contentEl.value.trim();
-
+      const title   = document.querySelector('.input-topic').value.trim();
+      const content = document.querySelector('.textarea-content').value.trim();
       if (!title || !content) {
         alert('Please fill in both topic and content.');
         return;
       }
 
-      // 从 localStorage 读取已有帖子
-      const posts = JSON.parse(localStorage.getItem('posts') || '[]');
-
-      // 新帖子对象：带上 forum 字段和可选的 image
-      const newPost = { forum, title, content, likes: 0, liked: false, comments: [] };
+      // 从 session 读取当前用户名
+      const sessionUser = localStorage.getItem('session') || 'Anonymous';
+      // newPost.author 始终设为 sessionUser
+      const newPost = {
+        forum,
+        title,
+        content,
+        author: sessionUser,     // 这里用 session 用户名
+        likes: 0,
+        liked: false,
+        comments: []
+      };
       if (selectedImageData) newPost.image = selectedImageData;
-      posts.push(newPost);
-      localStorage.setItem('posts', JSON.stringify(posts));
 
-      // 发布后回到对应版块页面
+      const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+      posts.push(newPost);
+      try {
+        localStorage.setItem('posts', JSON.stringify(posts));
+      } catch (err) {
+        console.error(err);
+        alert('存储超限，无法保存新帖子。');
+      }
+
       window.location.href = `forumPage.html?forum=${encodeURIComponent(forum)}`;
     }
   </script>
