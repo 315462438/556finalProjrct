@@ -145,6 +145,7 @@
       font-size: 14px;
     }
 
+    /* Articles */
     .article-block {
       display: flex;
       gap: 20px;
@@ -256,9 +257,7 @@
         }
       ]));
     }
-  </script>
-  
-  <script>
+
     if (!localStorage.getItem('session')) {
       window.location.href = 'login.html';
     }
@@ -266,15 +265,13 @@
 
   <div class="container">
     <div class="top-bar">
-      <div class="search-left">
-        <span class="location-icon" onclick="window.location.href='map.html'">📍</span>
-      </div>
+      <div class="search-left" onclick="window.location.href='map.html'">📍</div>
       <input class="search-input" type="text" placeholder="Hinted search text" />
       <button class="search-btn">Search</button>
       <a href="userinfo.html" style="text-decoration: none;">
         <div class="user-avatar">
           <div class="avatar-circle">
-            <img src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
+            <img id="mainAvatar" src="https://img.icons8.com/ios-filled/50/800080/user.png" alt="avatar" />
           </div>
         </div>
       </a>
@@ -345,7 +342,7 @@
     </div>
   </div>
 
-  <!-- Forums 渲染脚本 -->
+  <!-- Forums 渲染脚本（保持原样） -->
   <script>
     const defaultForums = ["Living", "Basketball", "ComSci", "Fishing", "Tennis", "Badminton"];
     const saved = JSON.parse(localStorage.getItem("forums") || "[]");
@@ -395,30 +392,28 @@
     });
   </script>
 
-  <!-- Friend List 渲染脚本 -->
+  <!-- Friend List 渲染脚本（保持原样） -->
   <script>
-    // 仅在首次没有 friends 时初始化默认好友
     const defaultFriends = ["TD", "Chen", "Yolanda", "Anqu"];
     if (localStorage.getItem('friends') === null) {
       localStorage.setItem('friends', JSON.stringify(defaultFriends));
     }
-  
+
     function startChat(user) {
       window.location.href = `chatPage.html?user=${encodeURIComponent(user)}`;
     }
-  
+
     function removeFriend(user) {
       let friends = JSON.parse(localStorage.getItem('friends') || '[]');
       friends = friends.filter(f => f !== user);
       localStorage.setItem('friends', JSON.stringify(friends));
-      renderFriendList();  // 重新渲染，而非 location.reload()
+      renderFriendList();
     }
-  
+
     function renderFriendList() {
       const container = document.querySelector('.friend-list');
       container.innerHTML = '<div class="section-title">Friend List</div>';
-  
-      // 直接读取，不再对空数组做任何重置
+
       const friends = JSON.parse(localStorage.getItem('friends') || '[]');
       friends.forEach(f => {
         const avatarUrl = `https://i.pravatar.cc/150?u=${encodeURIComponent(f)}`;
@@ -432,15 +427,24 @@
             <span>${f}</span>
           </div>
           <div>
-            <button class="chat-btn"   onclick="startChat('${f}')">Chat</button>
+            <button class="chat-btn" onclick="startChat('${f}')">Chat</button>
             <button class="remove-btn" onclick="removeFriend('${f}')">Remove</button>
           </div>
         `;
         container.appendChild(item);
       });
     }
-  
-    document.addEventListener("DOMContentLoaded", renderFriendList);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderFriendList();
+      // 更新右上角的用户头像为 userinfo 中保存的 avatar
+      const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+      const session = localStorage.getItem('session');
+      const user = accounts.find(a => a.username === session);
+      if (user && user.avatar) {
+        document.getElementById('mainAvatar').src = user.avatar;
+      }
+    });
   </script>
 </body>
 </html>
