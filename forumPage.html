@@ -204,20 +204,47 @@
     const allPosts = JSON.parse(localStorage.getItem('posts') || '[]');
     let posts = allPosts.filter(p => p.forum === forum);
 
-    if (posts.length === 0 && (forum === 'Fitness' || forum === 'Computer Science')) {
-      posts.push({
+  if (posts.length === 0 && ['Fitness', 'Computer Science', 'Drawing', 'Video Game', 'Living'].includes(forum)) {
+      let defaultPost = {
         forum,
         title: forum,
-        content: forum === 'Fitness'
-          ? 'what is your go–to pre/post workout meal? Share your healthy...'
-          : 'CS Elective Recommendations! Not sure what to take?',
-        author: 'Kate',
+        content: '',
+        author: 'Kate',  // 默认值，后面会按论坛改写
         avatar: '',
         likes: 0,
         liked: false,
         comments: []
-      });
+      };
+
+      if (forum === 'Fitness') {
+        defaultPost.title = 'Fitness Meal Ideas';
+        defaultPost.content = 'what is your go–to pre/post workout meal? Share your healthy meal';
+        defaultPost.author = 'Kate';
+      } else if (forum === 'Computer Science') {
+        defaultPost.title = 'CS Elective Recommendations!';
+        defaultPost.content = 'Not sure what to take?\nHere are students favorites: Machine Learning, AI, Web Development.';
+        defaultPost.author = 'Olivia';
+      } else if (forum === 'Drawing') {
+        defaultPost.title = 'graphic design';
+        defaultPost.content = 'Let’s share design tips and tools!';
+        defaultPost.author = 'Sam';
+      } else if (forum === 'Video Game') {
+        defaultPost.title = 'Apex Legend';
+        defaultPost.content = 'Let’s play Apex Legend!';
+        defaultPost.author = 'Emma';
+      } else if (forum === 'Living') {
+        defaultPost.title = 'Housing Options in St.Louis';
+        defaultPost.content = 'QH, Everly on the Loop, Altair at the Heights';
+        defaultPost.author = 'Olivia';
+      }
+
+      posts.push(defaultPost);
+      allPosts.push(defaultPost);
+      // savePosts(); // 如果需要保存进 localStorage 就取消注释
     }
+
+
+
 
     function savePosts() {
       localStorage.setItem('posts', JSON.stringify(allPosts));

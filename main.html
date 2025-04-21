@@ -344,7 +344,7 @@
 
   <!-- Forums 渲染脚本（保持原样） -->
   <script>
-    const defaultForums = ["Living", "Basketball", "ComSci", "Fishing", "Tennis", "Badminton"];
+    const defaultForums = ["Living", "Fitness", "Computer Science", "Drawing", "Tennis", "Video Game"];
     const saved = JSON.parse(localStorage.getItem("forums") || "[]");
     const savedTitles = saved.map(item => typeof item === "string" ? item : item.title);
     let allForums = [...defaultForums, ...savedTitles];
